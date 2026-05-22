@@ -1,0 +1,33 @@
+{
+    "name": "pyML",
+    // "features": {
+        //     "ghcr.io/devcontainers/features/common-utils:2": {
+            //         "installZsh": true,
+            //         "installOhMyZsh": true,
+            //         "installOhMyZshConfig": true,
+            //         "upgradePackages": true,
+            //         "installSsl": true,
+            //         "username": "dev",
+            //         "userUid": "automatic",
+            //         "userGid": "automatic"
+            //     }
+            // },
+    "customizations": {
+        "vscode":{
+            "extensions": [
+                "ms-python.autopep8",
+                "ms-toolsai.jupyter",
+                "ms-python.python",
+                "ms-toolsai.datawrangler"
+            ]
+        }
+    },
+    "mounts": [
+        { "source": "uv-cache", "target": "/root/.cache/uv", "type": "volume" }
+    ],
+    "runArgs": ["--runtime=nvidia","--gpus=all", "--name=andrewNG"],
+    // "remoteUser": "dev",
+    // "containerUser": "dev",
+    "onCreateCommand": "/entrypoint.sh && git config --global core.autocrlf true",
+    "image": "jogit/python:13-cu129"
+}
