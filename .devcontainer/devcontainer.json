@@ -23,7 +23,7 @@
         }
     },
     "mounts": [
-        { "source": "uv-cache", "target": "/root/.cache/uv", "type": "volume" }
+        { "source": "uv-cache", "target": "/home/dev/.cache/uv", "type": "volume" }
     ],
     "runArgs": ["--runtime=nvidia","--gpus=all", "--name=andrewNG"],
     // "remoteUser": "dev",
