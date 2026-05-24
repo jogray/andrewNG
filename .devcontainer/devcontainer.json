@@ -1,19 +1,19 @@
 {
     "name": "pyML",
     // "features": {
-        //     "ghcr.io/devcontainers/features/common-utils:2": {
-            //         "installZsh": true,
-            //         "installOhMyZsh": true,
-            //         "installOhMyZshConfig": true,
-            //         "upgradePackages": true,
-            //         "installSsl": true,
-            //         "username": "dev",
-            //         "userUid": "automatic",
-            //         "userGid": "automatic"
-            //     }
-            // },
+    //     "ghcr.io/devcontainers/features/common-utils:2": {
+    //         "installZsh": true,
+    //         "installOhMyZsh": true,
+    //         "installOhMyZshConfig": true,
+    //         "upgradePackages": true,
+    //         "installSsl": true,
+    //         "username": "dev",
+    //         "userUid": "automatic",
+    //         "userGid": "automatic"
+    //     }
+    // },
     "customizations": {
-        "vscode":{
+        "vscode": {
             "extensions": [
                 "ms-python.autopep8",
                 "ms-toolsai.jupyter",
@@ -23,9 +23,17 @@
         }
     },
     "mounts": [
-        { "source": "uv-cache", "target": "/home/dev/.cache/uv", "type": "volume" }
+        {
+            "source": "uv-cache",
+            "target": "/home/dev/.cache/uv",
+            "type": "volume"
+        }
     ],
-    "runArgs": ["--runtime=nvidia","--gpus=all", "--name=andrewNG"],
+    "runArgs": [
+        "--runtime=nvidia",
+        "--gpus=all",
+        "--name=andrewNG"
+    ],
     // "remoteUser": "dev",
     // "containerUser": "dev",
     "onCreateCommand": "/entrypoint.sh && git config --global core.autocrlf true",
