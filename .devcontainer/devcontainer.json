@@ -39,6 +39,6 @@
     ],
     // "remoteUser": "dev",
     // "containerUser": "dev",
-    "onCreateCommand": "/entrypoint.sh && git config --global core.autocrlf true",
+    "postCreateCommand": "/entrypoint.sh && echo private_set | sh",
     "image": "jogit/python:13-cu129"
 }
