@@ -10,7 +10,7 @@ def datatype_check(expected_output, target_output, error):
                 success += datatype_check(expected_output[key],
                                           target_output[key], error)
             except:
-                print("Error: {} in variable {}. Got {} but expected type {}".format(error,
+                print("错误: {} 在变量 {} 中。得到 {} 但预期类型 {}".format(error,
                                                                                      key,
                                                                                      type(
                                                                                          target_output[key]),
@@ -25,7 +25,7 @@ def datatype_check(expected_output, target_output, error):
                 success += datatype_check(expected_output[i],
                                           target_output[i], error)
             except:
-                print("Error: {} in variable {}, expected type: {}  but expected type {}".format(error,
+                print("错误: {} 在变量 {} 中，预期类型: {}  但预期类型 {}".format(error,
                                                                                                  i,
                                                                                                  type(
                                                                                                      target_output[i]),
@@ -49,7 +49,7 @@ def equation_output_check(expected_output, target_output, error):
                 success += equation_output_check(expected_output[key],
                                                  target_output[key], error)
             except:
-                print("Error: {} for variable {}.".format(error,
+                print("错误: {} 对于变量 {}。".format(error,
                                                           key))
         if success == len(target_output.keys()):
             return 1
@@ -61,7 +61,7 @@ def equation_output_check(expected_output, target_output, error):
                 success += equation_output_check(expected_output[i],
                                                  target_output[i], error)
             except:
-                print("Error: {} for variable in position {}.".format(error, i))
+                print("错误: {} 对于位置 {} 的变量。".format(error, i))
         if success == len(target_output):
             return 1
         else:
@@ -84,7 +84,7 @@ def shape_check(expected_output, target_output, error):
                 success += shape_check(expected_output[key],
                                        target_output[key], error)
             except:
-                print("Error: {} for variable {}.".format(error, key))
+                print("错误: {} 对于变量 {}。".format(error, key))
         if success == len(target_output.keys()):
             return 1
         else:
@@ -95,7 +95,7 @@ def shape_check(expected_output, target_output, error):
                 success += shape_check(expected_output[i],
                                        target_output[i], error)
             except:
-                print("Error: {} for variable {}.".format(error, i))
+                print("错误: {} 对于变量 {}。".format(error, i))
         if success == len(target_output):
             return 1
         else:
@@ -124,15 +124,15 @@ def single_test(test_cases, target):
                     *test_case['input']).shape
                 success += 1
         except:
-            print("Error: " + test_case['error'])
+            print("错误: " + test_case['error'])
 
     if success == len(test_cases):
-        print("\033[92m All tests passed.")
+        print("\033[92m 所有测试通过。")
     else:
-        print('\033[92m', success, " Tests passed")
-        print('\033[91m', len(test_cases) - success, " Tests failed")
+        print('\033[92m', success, " 个测试通过")
+        print('\033[91m', len(test_cases) - success, " 个测试失败")
         raise AssertionError(
-            "Not all tests were passed for {}. Check your equations and avoid using global variables inside the function.".format(target.__name__))
+            "并非所有测试都通过了 {}。检查您的方程并避免在函数内部使用全局变量。".format(target.__name__))
 
 
 def multiple_test(test_cases, target):
@@ -151,13 +151,13 @@ def multiple_test(test_cases, target):
                 success += shape_check(test_case['expected'],
                                        target_answer, test_case['error'])
         except:
-            print('\33[30m', "Error: " + test_case['error'])
+            print('\33[30m', "错误: " + test_case['error'])
 
     if success == len(test_cases):
-        print("\033[92m All tests passed.")
+        print("\033[92m 所有测试通过。")
     else:
-        print('\033[92m', success, " Tests passed")
-        print('\033[91m', len(test_cases) - success, " Tests failed")
+        print('\033[92m', success, " 个测试通过")
+        print('\033[91m', len(test_cases) - success, " 个测试失败")
         raise AssertionError(
-            "Not all tests were passed for {}. Check your equations and avoid using global variables inside the function.".format(target.__name__))
+            "并非所有测试都通过了 {}。检查您的方程并避免在函数内部使用全局变量。".format(target.__name__))
 

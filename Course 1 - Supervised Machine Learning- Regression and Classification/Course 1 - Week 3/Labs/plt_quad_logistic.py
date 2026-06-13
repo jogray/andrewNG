@@ -1,6 +1,6 @@
 """
 plt_quad_logistic.py
-    interactive plot and supporting routines showing logistic regression
+    展示逻辑回归的交互式绘图和支持例程
 """
 
 import time
@@ -17,7 +17,7 @@ from lab_utils_common import np, plt, dlc, dlcolors, sigmoid, compute_cost_matri
 #display(output)
 
 class plt_quad_logistic:
-    ''' plots a quad plot showing logistic regression '''
+    ''' 绘制展示逻辑回归的四合一图 '''
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-locals
     # pylint: disable=missing-function-docstring
@@ -28,7 +28,7 @@ class plt_quad_logistic:
         fig.canvas.toolbar_visible = False
         fig.canvas.header_visible = False
         fig.canvas.footer_visible = False
-        fig.set_facecolor('#ffffff') #white
+        fig.set_facecolor('#ffffff') #白色
         gs  = GridSpec(2, 2, figure=fig)
         ax0 = fig.add_subplot(gs[0, 0])
         ax1 = fig.add_subplot(gs[0, 1])
@@ -54,12 +54,12 @@ class plt_quad_logistic:
 
         # setup events
         self.cid = fig.canvas.mpl_connect('button_press_event', self.click_contour)
-        self.bcalc = Button(axcalc, 'Run Gradient Descent \nfrom current w,b (click)', color=dlc["dlorange"])
+        self.bcalc = Button(axcalc, '运行梯度下降\n从当前w,b开始（点击）', color=dlc["dlorange"])
         self.bcalc.on_clicked(self.calc_logistic)
 
 #    @output.capture()  # debug
     def click_contour(self, event):
-        ''' called when click in contour '''
+        ''' 在等高线图中点击时调用 '''
         if event.inaxes == self.ax[1]:   #contour plot
             self.w = event.xdata
             self.b = event.ydata
@@ -73,7 +73,7 @@ class plt_quad_logistic:
 
 #    @output.capture()  # debug
     def calc_logistic(self, event):
-        ''' called on run gradient event '''
+        ''' 运行梯度事件时调用 '''
         for it in [1, 8,16,32,64,128,256,512,1024,2048,4096]:
             w, self.b, J_hist = gradient_descent(self.x_train.reshape(-1,1), self.y_train.reshape(-1,1),
                                                  np.array(self.w).reshape(-1,1), self.b, 0.1, it,
@@ -89,7 +89,7 @@ class plt_quad_logistic:
 
 
 class data_plot:
-    ''' handles data plot '''
+    ''' 处理数据绘图 '''
     # pylint: disable=missing-function-docstring
     # pylint: disable=attribute-defined-outside-init
     def __init__(self, ax, x_train, y_train, w, b):
@@ -111,13 +111,13 @@ class data_plot:
         y = self.y_train
         pos = y == 1
         neg = y == 0
-        self.ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="malignant")
-        self.ax.scatter(x[neg], y[neg], marker='o', s=100, label="benign", facecolors='none',
+        self.ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="恶性")
+        self.ax.scatter(x[neg], y[neg], marker='o', s=100, label="良性", facecolors='none',
                    edgecolors=dlc["dlblue"],lw=3)
         self.ax.set_ylim(-0.175,1.1)
         self.ax.set_ylabel('y')
-        self.ax.set_xlabel('Tumor Size')
-        self.ax.set_title("Logistic Regression on Categorical Data")
+        self.ax.set_xlabel('肿瘤大小')
+        self.ax.set_title("分类数据上的逻辑回归")
 
     def update(self, w, b):
         self.w = w
@@ -142,21 +142,21 @@ class data_plot:
         self.alegend = self.ax.legend(loc='upper left')
 
     def mk_cost_lines(self, firsttime=False):
-        ''' makes vertical cost lines'''
+        ''' 绘制垂直代价线'''
         if not firsttime:
             for artist in self.cost_items:
                 artist.remove()
         self.cost_items = []
         cstr = f"cost = (1/{self.m})*("
         ctot = 0
-        label = 'cost for point'
+        label = '该点的代价'
         addedbreak = False
         for p in zip(self.x_train,self.y_train):
             f_wb_p = sigmoid(self.w*p[0]+self.b)
             c_p = compute_cost_matrix(p[0].reshape(-1,1), p[1],np.array(self.w), self.b, logistic=True, lambda_=0, safe=True)
             c_p_txt = c_p
             a = self.ax.vlines(p[0], p[1],f_wb_p, lw=3, color=dlc["dlpurple"], ls='dotted', label=label)
-            label='' #just one
+            label='' #只显示一次
             cxy = [p[0], p[1] + (f_wb_p-p[1])/2]
             b = self.ax.annotate(f'{c_p_txt:0.1f}', xy=cxy, xycoords='data',color=dlc["dlpurple"],
                         xytext=(5, 0), textcoords='offset points')
@@ -168,13 +168,13 @@ class data_plot:
             self.cost_items.extend((a,b))
         ctot = ctot/(len(self.x_train))
         cstr = cstr[:-1] + f") = {ctot:0.2f}"
-        ## todo.. figure out how to get this textbox to extend to the width of the subplot
+        ## todo.. 搞清楚如何让这个文本框扩展到子图的宽度
         c = self.ax.text(0.05,0.02,cstr, transform=self.ax.transAxes, color=dlc["dlpurple"])
         self.cost_items.append(c)
 
 
 class contour_and_surface_plot:
-    ''' plots combined in class as they have similar operations '''
+    ''' 将等高线图和曲面图组合在一个类中，因为它们有相似的操作 '''
     # pylint: disable=missing-function-docstring
     # pylint: disable=attribute-defined-outside-init
     def __init__(self, axc, axs, x_train, y_train, w_range, b_range, w, b):
@@ -184,11 +184,11 @@ class contour_and_surface_plot:
         self.axc = axc
         self.axs = axs
 
-        #setup useful ranges and common linspaces
+        #设置有用的范围和公共线性空间
         b_space  = np.linspace(*b_range, 100)
         w_space  = np.linspace(*w_range, 100)
 
-        # get cost for w,b ranges for contour and 3D
+        # 获取w,b范围的代价，用于等高线图和3D图
         tmp_b,tmp_w = np.meshgrid(b_space,w_space)
         z = np.zeros_like(tmp_b)
         for i in range(tmp_w.shape[0]):
@@ -198,7 +198,7 @@ class contour_and_surface_plot:
                 if z[i,j] == 0:
                     z[i,j] = 1e-9
 
-        ### plot contour ###
+        ### 绘制等高线图 ###
         CS = axc.contour(tmp_w, tmp_b, np.log(z),levels=12, linewidths=2, alpha=0.7,colors=dlcolors)
         axc.set_title('log(Cost(w,b))')
         axc.set_xlabel('w', fontsize=10)
@@ -206,10 +206,10 @@ class contour_and_surface_plot:
         axc.set_xlim(w_range)
         axc.set_ylim(b_range)
         self.update_contour_wb_lines(w, b, firsttime=True)
-        axc.text(0.7,0.05,"Click to choose w,b",  bbox=dict(facecolor='white', ec = 'black'), fontsize = 10,
+        axc.text(0.7,0.05,"点击选择w,b",  bbox=dict(facecolor='white', ec = 'black'), fontsize = 10,
                 transform=axc.transAxes, verticalalignment = 'center', horizontalalignment= 'center')
 
-        #Surface plot of the cost function J(w,b)
+        #代价函数J(w,b)的曲面图
         axs.plot_surface(tmp_w, tmp_b, z,  cmap = cm.jet, alpha=0.3, antialiased=True)
         axs.plot_wireframe(tmp_w, tmp_b, z, color='k', alpha=0.1)
         axs.set_xlabel("$w$")
@@ -232,29 +232,29 @@ class contour_and_surface_plot:
         cst = compute_cost_matrix(self.x_train.reshape(-1,1), self.y_train, np.array(self.w), self.b,
                                   logistic=True, lambda_=0, safe=True)
 
-        # remove lines and re-add on contour plot and 3d plot
+        # 移除线条并在等高线图和3D图上重新添加
         if not firsttime:
             for artist in self.dyn_items:
                 artist.remove()
-        a = self.axc.scatter(self.w, self.b, s=100, color=dlc["dlblue"], zorder= 10, label="cost with \ncurrent w,b")
+        a = self.axc.scatter(self.w, self.b, s=100, color=dlc["dlblue"], zorder= 10, label="当前w,b的代价")
         b = self.axc.hlines(self.b, self.axc.get_xlim()[0], self.w, lw=4, color=dlc["dlpurple"], ls='dotted')
         c = self.axc.vlines(self.w, self.axc.get_ylim()[0] ,self.b, lw=4, color=dlc["dlpurple"], ls='dotted')
         d = self.axc.annotate(f"Cost: {cst:0.2f}", xy= (self.w, self.b), xytext = (4,4), textcoords = 'offset points',
                            bbox=dict(facecolor='white'), size = 10)
-        #Add point in 3D surface plot
+        #在3D曲面图中添加点
         e = self.axs.scatter3D(self.w, self.b, cst , marker='X', s=100)
 
         self.dyn_items = [a,b,c,d,e]
 
 
 class cost_plot:
-    """ manages cost plot for plt_quad_logistic """
+    """ 管理plt_quad_logistic的代价绘图 """
     # pylint: disable=missing-function-docstring
     # pylint: disable=attribute-defined-outside-init
     def __init__(self,ax):
         self.ax = ax
-        self.ax.set_ylabel("log(cost)")
-        self.ax.set_xlabel("iteration")
+        self.ax.set_ylabel("log(代价)")
+        self.ax.set_xlabel("迭代次数")
         self.costs = []
         self.cline = self.ax.plot(0,0, color=dlc["dlblue"])
 
@@ -268,11 +268,11 @@ class cost_plot:
         self.cline = self.ax.plot(self.costs)
 
 class path:
-    ''' tracks paths during gradient descent on contour plot '''
+    ''' 在等高线图上跟踪梯度下降路径 '''
     # pylint: disable=missing-function-docstring
     # pylint: disable=attribute-defined-outside-init
     def __init__(self, w, b, ax):
-        ''' w, b at start of path '''
+        ''' 路径起点的w, b '''
         self.path_items = []
         self.w = w
         self.b = b
@@ -296,23 +296,23 @@ class path:
         self.b = b
 
 #-----------
-# related to the logistic gradient descent lab
+# 与逻辑梯度下降实验相关
 #----------
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-    """ truncates color map """
+    """ 截断颜色映射 """
     new_cmap = colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
     return new_cmap
 
 def plt_prob(ax, w_out,b_out):
-    """ plots a decision boundary but include shading to indicate the probability """
-    #setup useful ranges and common linspaces
+    """ 绘制决策边界，但包含阴影以表示概率 """
+    #设置有用的范围和公共线性空间
     x0_space  = np.linspace(0, 4 , 100)
     x1_space  = np.linspace(0, 4 , 100)
 
-    # get probability for x0,x1 ranges
+    # 获取x0,x1范围的概率
     tmp_x0,tmp_x1 = np.meshgrid(x0_space,x1_space)
     z = np.zeros_like(tmp_x0)
     for i in range(tmp_x0.shape[0]):

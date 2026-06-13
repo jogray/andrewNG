@@ -1,6 +1,6 @@
 """ 
 lab_utils_common.py
-    functions common to all optional labs, Course 1, Week 2 
+    所有可选实验室通用的函数，课程1，第2周
 """
 
 import numpy as np
@@ -13,27 +13,27 @@ dlc = dict(dlblue = '#0096ff', dlorange = '#FF9300', dldarkred='#C00000', dlmage
 
 
 ##########################################################
-# Regression Routines
+# 回归例程
 ##########################################################
 
-#Function to calculate the cost
+#计算代价的函数
 def compute_cost_matrix(X, y, w, b, verbose=False):
     """
-    Computes the gradient for linear regression
-     Args:
-      X (ndarray (m,n)): Data, m examples with n features
-      y (ndarray (m,)) : target values
-      w (ndarray (n,)) : model parameters  
-      b (scalar)       : model parameter
-      verbose : (Boolean) If true, print out intermediate value f_wb
-    Returns
+    计算线性回归的梯度
+     参数:
+      X (ndarray (m,n)): 数据，m个样本，n个特征
+      y (ndarray (m,)) : 目标值
+      w (ndarray (n,)) : 模型参数
+      b (scalar)       : 模型参数
+      verbose : (Boolean) 如果为True，打印中间值f_wb
+    返回
       cost: (scalar)
     """
     m = X.shape[0]
 
-    # calculate f_wb for all examples.
+    # 计算所有样本的f_wb。
     f_wb = X @ w + b
-    # calculate cost
+    # 计算代价
     total_cost = (1/(2*m)) * np.sum((f_wb-y)**2)
 
     if verbose: print("f_wb:")
@@ -43,16 +43,16 @@ def compute_cost_matrix(X, y, w, b, verbose=False):
 
 def compute_gradient_matrix(X, y, w, b):
     """
-    Computes the gradient for linear regression
+    计算线性回归的梯度
 
-    Args:
-      X (ndarray (m,n)): Data, m examples with n features
-      y (ndarray (m,)) : target values
-      w (ndarray (n,)) : model parameters  
-      b (scalar)       : model parameter
-    Returns
-      dj_dw (ndarray (n,1)): The gradient of the cost w.r.t. the parameters w.
-      dj_db (scalar):        The gradient of the cost w.r.t. the parameter b.
+    参数:
+      X (ndarray (m,n)): 数据，m个样本，n个特征
+      y (ndarray (m,)) : 目标值
+      w (ndarray (n,)) : 模型参数
+      b (scalar)       : 模型参数
+    返回
+      dj_dw (ndarray (n,1)): 代价相对于参数w的梯度。
+      dj_db (scalar):        代价相对于参数b的梯度。
 
     """
     m,n = X.shape
@@ -64,17 +64,17 @@ def compute_gradient_matrix(X, y, w, b):
     return dj_db,dj_dw
 
 
-# Loop version of multi-variable compute_cost
+# 多变量compute_cost的循环版本
 def compute_cost(X, y, w, b):
     """
-    compute cost
-    Args:
-      X (ndarray (m,n)): Data, m examples with n features
-      y (ndarray (m,)) : target values
-      w (ndarray (n,)) : model parameters  
-      b (scalar)       : model parameter
-    Returns
-      cost (scalar)    : cost
+    计算代价
+    参数:
+      X (ndarray (m,n)): 数据，m个样本，n个特征
+      y (ndarray (m,)) : 目标值
+      w (ndarray (n,)) : 模型参数
+      b (scalar)       : 模型参数
+    返回
+      cost (scalar)    : 代价
     """
     m = X.shape[0]
     cost = 0.0
@@ -86,17 +86,17 @@ def compute_cost(X, y, w, b):
 
 def compute_gradient(X, y, w, b):
     """
-    Computes the gradient for linear regression
-    Args:
-      X (ndarray (m,n)): Data, m examples with n features
-      y (ndarray (m,)) : target values
-      w (ndarray (n,)) : model parameters  
-      b (scalar)       : model parameter
-    Returns
-      dj_dw (ndarray Shape (n,)): The gradient of the cost w.r.t. the parameters w.
-      dj_db (scalar):             The gradient of the cost w.r.t. the parameter b.
+    计算线性回归的梯度
+    参数:
+      X (ndarray (m,n)): 数据，m个样本，n个特征
+      y (ndarray (m,)) : 目标值
+      w (ndarray (n,)) : 模型参数
+      b (scalar)       : 模型参数
+    返回
+      dj_dw (ndarray Shape (n,)): 代价相对于参数w的梯度。
+      dj_db (scalar):             代价相对于参数b的梯度。
     """
-    m,n = X.shape           #(number of examples, number of features)
+    m,n = X.shape           #(样本数量, 特征数量)
     dj_dw = np.zeros((n,))
     dj_db = 0.
 

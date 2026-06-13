@@ -1,2 +1,3 @@
 data/
 private_set
+__pycache__/

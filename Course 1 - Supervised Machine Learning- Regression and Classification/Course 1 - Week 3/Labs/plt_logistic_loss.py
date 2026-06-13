@@ -1,5 +1,5 @@
 """----------------------------------------------------------------
- logistic_loss plotting routines and support
+ 逻辑损失绘图例程和支持
 """
 
 from matplotlib import cm
@@ -7,25 +7,25 @@ from lab_utils_common import sigmoid, dlblue, dlorange, np, plt, compute_cost_ma
 
 def compute_cost_logistic_sq_err(X, y, w, b):
     """
-    compute sq error cost on logicist data (for negative example only, not used in practice)
-    Args:
-      X (ndarray): Shape (m,n) matrix of examples with multiple features
-      w (ndarray): Shape (n)   parameters for prediction
-      b (scalar):              parameter  for prediction
-    Returns:
-      cost (scalar): cost
+    计算逻辑数据上的平方误差代价（仅用于负样本，实践中不使用）
+    参数:
+      X (ndarray): Shape (m,n) 多特征样本矩阵
+      w (ndarray): Shape (n)   预测参数
+      b (scalar):              预测参数
+    返回:
+      cost (scalar): 代价
     """
     m = X.shape[0]
     cost = 0.0
     for i in range(m):
         z_i = np.dot(X[i],w) + b
-        f_wb_i = sigmoid(z_i)                 #add sigmoid to normal sq error cost for linear regression
+        f_wb_i = sigmoid(z_i)                 #在线性回归的正常平方误差代价上添加sigmoid
         cost = cost + (f_wb_i - y[i])**2
     cost = cost / (2 * m)
     return np.squeeze(cost)
 
 def plt_logistic_squared_error(X,y):
-    """ plots logistic squared error for demonstration """
+    """ 绘制逻辑平方误差用于演示 """
     wx, by = np.meshgrid(np.linspace(-6,12,50),
                          np.linspace(10, -20, 40))
     points = np.c_[wx.ravel(), by.ravel()]
@@ -45,15 +45,15 @@ def plt_logistic_squared_error(X,y):
 
     ax.set_xlabel('w', fontsize=16)
     ax.set_ylabel('b', fontsize=16)
-    ax.set_zlabel("Cost", rotation=90, fontsize=16)
-    ax.set_title('"Logistic" Squared Error Cost vs (w, b)')
+    ax.set_zlabel("代价", rotation=90, fontsize=16)
+    ax.set_title('"逻辑"平方误差代价 vs (w, b)')
     ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
 
 
 def plt_logistic_cost(X,y):
-    """ plots logistic cost """
+    """ 绘制逻辑代价 """
     wx, by = np.meshgrid(np.linspace(-6,12,50),
                          np.linspace(0, -20, 40))
     points = np.c_[wx.ravel(), by.ravel()]
@@ -73,8 +73,8 @@ def plt_logistic_cost(X,y):
 
     ax.set_xlabel('w', fontsize=16)
     ax.set_ylabel('b', fontsize=16)
-    ax.set_zlabel("Cost", rotation=90, fontsize=16)
-    ax.set_title('Logistic Cost vs (w, b)')
+    ax.set_zlabel("代价", rotation=90, fontsize=16)
+    ax.set_title('逻辑代价 vs (w, b)')
     ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
@@ -86,7 +86,7 @@ def plt_logistic_cost(X,y):
     ax.set_xlabel('w', fontsize=16)
     ax.set_ylabel('b', fontsize=16)
     ax.set_zlabel('\nlog(Cost)', fontsize=16)
-    ax.set_title('log(Logistic Cost) vs (w, b)')
+    ax.set_title('log(逻辑代价) vs (w, b)')
     ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
@@ -96,14 +96,14 @@ def plt_logistic_cost(X,y):
 
 
 def soup_bowl():
-    """ creates 3D quadratic error surface """
-    #Create figure and plot with a 3D projection
+    """ 创建3D二次误差曲面 """
+    #创建图形并使用3D投影绘制
     fig = plt.figure(figsize=(4,4))
     fig.canvas.toolbar_visible = False
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-    #Plot configuration
+    #绘图配置
     ax = fig.add_subplot(111, projection='3d')
     ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
@@ -111,11 +111,11 @@ def soup_bowl():
     ax.zaxis.set_rotate_label(False)
     ax.view_init(15, -120)
 
-    #Useful linearspaces to give values to the parameters w and b
+    #有用的线性空间，用于给参数w和b赋值
     w = np.linspace(-20, 20, 100)
     b = np.linspace(-20, 20, 100)
 
-    #Get the z value for a bowl-shaped cost function
+    #获取碗形代价函数的z值
     z=np.zeros((len(w), len(b)))
     j=0
     for x in w:
@@ -125,22 +125,22 @@ def soup_bowl():
             i+=1
         j+=1
 
-    #Meshgrid used for plotting 3D functions
+    #用于绘制3D函数的网格
     W, B = np.meshgrid(w, b)
 
-    #Create the 3D surface plot of the bowl-shaped cost function
+    #创建碗形代价函数的3D曲面图
     ax.plot_surface(W, B, z, cmap = "Spectral_r", alpha=0.7, antialiased=False)
     ax.plot_wireframe(W, B, z, color='k', alpha=0.1)
     ax.set_xlabel("$w$")
     ax.set_ylabel("$b$")
-    ax.set_zlabel("Cost", rotation=90)
-    ax.set_title("Squared Error Cost used in Linear Regression")
+    ax.set_zlabel("代价", rotation=90)
+    ax.set_title("线性回归中使用的平方误差代价")
 
     plt.show()
 
 
 def plt_simple_example(x, y):
-    """ plots tumor data """
+    """ 绘制肿瘤数据 """
     pos = y == 1
     neg = y == 0
 
@@ -149,17 +149,17 @@ def plt_simple_example(x, y):
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-    ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="malignant")
-    ax.scatter(x[neg], y[neg], marker='o', s=100, label="benign", facecolors='none', edgecolors=dlblue,lw=3)
+    ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="恶性")
+    ax.scatter(x[neg], y[neg], marker='o', s=100, label="良性", facecolors='none', edgecolors=dlblue,lw=3)
     ax.set_ylim(-0.075,1.1)
     ax.set_ylabel('y')
-    ax.set_xlabel('Tumor Size')
+    ax.set_xlabel('肿瘤大小')
     ax.legend(loc='lower right')
-    ax.set_title("Example of Logistic Regression on Categorical Data")
+    ax.set_title("分类数据上的逻辑回归示例")
 
 
 def plt_two_logistic_loss_curves():
-    """ plots the logistic loss """
+    """ 绘制逻辑损失 """
     fig,ax = plt.subplots(1,2,figsize=(6,3),sharey=True)
     fig.canvas.toolbar_visible = False
     fig.canvas.header_visible = False
@@ -174,18 +174,18 @@ def plt_two_logistic_loss_curves():
     #ax[1].set_title("y = 0")
     ax[1].text(0.5, 4.0, "y = 0", fontsize=12)
     ax[1].set_xlabel(r"$f_{w,b}(x)$")
-    ax[0].annotate("prediction \nmatches \ntarget ", xy= [1,0], xycoords='data',
+    ax[0].annotate("预测\n匹配\n目标 ", xy= [1,0], xycoords='data',
                  xytext=[-10,30],textcoords='offset points', ha="right", va="center",
                    arrowprops={'arrowstyle': '->', 'color': dlorange, 'lw': 3},)
-    ax[0].annotate("loss increases as prediction\n differs from target", xy= [0.1,-np.log(0.1)], xycoords='data',
+    ax[0].annotate("预测与目标不同时\n损失增加", xy= [0.1,-np.log(0.1)], xycoords='data',
                  xytext=[10,30],textcoords='offset points', ha="left", va="center",
                    arrowprops={'arrowstyle': '->', 'color': dlorange, 'lw': 3},)
-    ax[1].annotate("prediction \nmatches \ntarget ", xy= [0,0], xycoords='data',
+    ax[1].annotate("预测\n匹配\n目标 ", xy= [0,0], xycoords='data',
                  xytext=[10,30],textcoords='offset points', ha="left", va="center",
                    arrowprops={'arrowstyle': '->', 'color': dlorange, 'lw': 3},)
-    ax[1].annotate("loss increases as prediction\n differs from target", xy= [0.9,-np.log(1-0.9)], xycoords='data',
+    ax[1].annotate("预测与目标不同时\n损失增加", xy= [0.9,-np.log(1-0.9)], xycoords='data',
                  xytext=[-10,30],textcoords='offset points', ha="right", va="center",
                    arrowprops={'arrowstyle': '->', 'color': dlorange, 'lw': 3},)
-    plt.suptitle("Loss Curves for Two Categorical Target Values", fontsize=12)
+    plt.suptitle("两个分类目标值的损失曲线", fontsize=12)
     plt.tight_layout()
     plt.show()

@@ -1,10 +1,9 @@
 """
 lab_utils_common
-   contains common routines and variable definitions
-   used by all the labs in this week.
-   by contrast, specific, large plotting routines will be in separate files
-   and are generally imported into the week where they are used.
-   those files will import this file
+   包含本周所有实验使用的通用例程和变量定义。
+   相比之下，特定的大型绘图例程将放在单独的文件中，
+   通常在使用的周次中导入。
+   这些文件将导入本文件
 """
 import copy
 import math
@@ -23,55 +22,55 @@ plt.style.use('./deeplearning.mplstyle')
 
 def sigmoid(z):
     """
-    Compute the sigmoid of z
+    计算z的sigmoid值
 
-    Parameters
+    参数
     ----------
     z : array_like
-        A scalar or numpy array of any size.
+        标量或任意大小的numpy数组。
 
-    Returns
+    返回值
     -------
      g : array_like
          sigmoid(z)
     """
-    z = np.clip( z, -500, 500 )           # protect against overflow
+    z = np.clip( z, -500, 500 )           # 防止溢出
     g = 1.0/(1.0+np.exp(-z))
 
     return g
 
 ##########################################################
-# Regression Routines
+# 回归例程
 ##########################################################
 
 def predict_logistic(X, w, b):
-    """ performs prediction """
+    """ 执行预测 """
     return sigmoid(X @ w + b)
 
 def predict_linear(X, w, b):
-    """ performs prediction """
+    """ 执行预测 """
     return X @ w + b
 
 def compute_cost_logistic(X, y, w, b, lambda_=0, safe=False):
     """
-    Computes cost using logistic loss, non-matrix version
+    使用逻辑损失计算成本，非矩阵版本
 
-    Args:
-      X (ndarray): Shape (m,n)  matrix of examples with n features
-      y (ndarray): Shape (m,)   target values
-      w (ndarray): Shape (n,)   parameters for prediction
-      b (scalar):               parameter  for prediction
-      lambda_ : (scalar, float) Controls amount of regularization, 0 = no regularization
-      safe : (boolean)          True-selects under/overflow safe algorithm
-    Returns:
-      cost (scalar): cost
+    参数:
+      X (ndarray): 形状 (m,n)  包含n个特征的样本矩阵
+      y (ndarray): 形状 (m,)   目标值
+      w (ndarray): 形状 (n,)   预测参数
+      b (scalar):               预测参数
+      lambda_ : (scalar, float) 控制正则化程度, 0 = 无正则化
+      safe : (boolean)          True选择下/溢出安全算法
+    返回值:
+      cost (scalar): 成本
     """
 
     m,n = X.shape
     cost = 0.0
     for i in range(m):
         z_i    = np.dot(X[i],w) + b                                             #(n,)(n,) or (n,) ()
-        if safe:  #avoids overflows
+        if safe:  #避免溢出
             cost += -(y[i] * z_i ) + log_1pexp(z_i)
         else:
             f_wb_i = sigmoid(z_i)                                                   #(n,)
@@ -88,11 +87,11 @@ def compute_cost_logistic(X, y, w, b, lambda_=0, safe=False):
 
 
 def log_1pexp(x, maximum=20):
-    ''' approximate log(1+exp^x)
+    ''' 近似计算 log(1+exp^x)
         https://stats.stackexchange.com/questions/475589/numerical-computation-of-cross-entropy-in-practice
-    Args:
-    x   : (ndarray Shape (n,1) or (n,)  input
-    out : (ndarray Shape matches x      output ~= np.log(1+exp(x))
+    参数:
+    x   : (ndarray 形状 (n,1) 或 (n,)  输入
+    out : (ndarray 形状与x匹配        输出 ~= np.log(1+exp(x))
     '''
 
     out  = np.zeros_like(x,dtype=float)
@@ -106,21 +105,21 @@ def log_1pexp(x, maximum=20):
 
 def compute_cost_matrix(X, y, w, b, logistic=False, lambda_=0, safe=True):
     """
-    Computes the cost using  using matrices
-    Args:
-      X : (ndarray, Shape (m,n))          matrix of examples
-      y : (ndarray  Shape (m,) or (m,1))  target value of each example
-      w : (ndarray  Shape (n,) or (n,1))  Values of parameter(s) of the model
-      b : (scalar )                       Values of parameter of the model
-      verbose : (Boolean) If true, print out intermediate value f_wb
-    Returns:
-      total_cost: (scalar)                cost
+    使用矩阵计算成本
+    参数:
+      X : (ndarray, 形状 (m,n))          样本矩阵
+      y : (ndarray  形状 (m,) 或 (m,1))  每个样本的目标值
+      w : (ndarray  形状 (n,) 或 (n,1))  模型参数值
+      b : (scalar )                       模型参数值
+      verbose : (Boolean) 如果为true, 打印中间值 f_wb
+    返回值:
+      total_cost: (scalar)                成本
     """
     m = X.shape[0]
-    y = y.reshape(-1,1)             # ensure 2D
-    w = w.reshape(-1,1)             # ensure 2D
+    y = y.reshape(-1,1)             # 确保2维
+    w = w.reshape(-1,1)             # 确保2维
     if logistic:
-        if safe:  #safe from overflow
+        if safe:  #安全防溢出
             z = X @ w + b                                                           #(m,n)(n,1)=(m,1)
             cost = -(y * z) + log_1pexp(z)
             cost = np.sum(cost)/m                                                   # (scalar)
@@ -140,124 +139,124 @@ def compute_cost_matrix(X, y, w, b, logistic=False, lambda_=0, safe=True):
 
 def compute_gradient_matrix(X, y, w, b, logistic=False, lambda_=0):
     """
-    Computes the gradient using matrices
+    使用矩阵计算梯度
 
-    Args:
-      X : (ndarray, Shape (m,n))          matrix of examples
-      y : (ndarray  Shape (m,) or (m,1))  target value of each example
-      w : (ndarray  Shape (n,) or (n,1))  Values of parameters of the model
-      b : (scalar )                       Values of parameter of the model
-      logistic: (boolean)                 linear if false, logistic if true
-      lambda_:  (float)                   applies regularization if non-zero
-    Returns
-      dj_dw: (array_like Shape (n,1))     The gradient of the cost w.r.t. the parameters w
-      dj_db: (scalar)                     The gradient of the cost w.r.t. the parameter b
+    参数:
+      X : (ndarray, 形状 (m,n))          样本矩阵
+      y : (ndarray  形状 (m,) 或 (m,1))  每个样本的目标值
+      w : (ndarray  形状 (n,) 或 (n,1))  模型参数值
+      b : (scalar )                       模型参数值
+      logistic: (boolean)                 如果为false则线性, 如果为true则逻辑回归
+      lambda_:  (float)                   非零时应用正则化
+    返回值
+      dj_dw: (array_like 形状 (n,1))     成本关于参数w的梯度
+      dj_db: (scalar)                     成本关于参数b的梯度
     """
     m = X.shape[0]
-    y = y.reshape(-1,1)             # ensure 2D
-    w = w.reshape(-1,1)             # ensure 2D
+    y = y.reshape(-1,1)             # 确保2维
+    w = w.reshape(-1,1)             # 确保2维
 
     f_wb  = sigmoid( X @ w + b ) if logistic else  X @ w + b      # (m,n)(n,1) = (m,1)
     err   = f_wb - y                                              # (m,1)
     dj_dw = (1/m) * (X.T @ err)                                   # (n,m)(m,1) = (n,1)
     dj_db = (1/m) * np.sum(err)                                   # scalar
 
-    dj_dw += (lambda_/m) * w        # regularize                  # (n,1)
+    dj_dw += (lambda_/m) * w        # 正则化                      # (n,1)
 
     return dj_db, dj_dw                                           # scalar, (n,1)
 
 def gradient_descent(X, y, w_in, b_in, alpha, num_iters, logistic=False, lambda_=0, verbose=True, Trace=True):
     """
-    Performs batch gradient descent to learn theta. Updates theta by taking
-    num_iters gradient steps with learning rate alpha
+    执行批量梯度下降来学习theta。通过以学习率alpha
+    执行num_iters步梯度来更新theta
 
-    Args:
-      X (ndarray):    Shape (m,n)         matrix of examples
-      y (ndarray):    Shape (m,) or (m,1) target value of each example
-      w_in (ndarray): Shape (n,) or (n,1) Initial values of parameters of the model
-      b_in (scalar):                      Initial value of parameter of the model
-      logistic: (boolean)                 linear if false, logistic if true
-      lambda_:  (float)                   applies regularization if non-zero
-      alpha (float):                      Learning rate
-      num_iters (int):                    number of iterations to run gradient descent
+    参数:
+      X (ndarray):    形状 (m,n)         样本矩阵
+      y (ndarray):    形状 (m,) 或 (m,1) 每个样本的目标值
+      w_in (ndarray): 形状 (n,) 或 (n,1) 模型参数的初始值
+      b_in (scalar):                      模型参数的初始值
+      logistic: (boolean)                 如果为false则线性, 如果为true则逻辑回归
+      lambda_:  (float)                   非零时应用正则化
+      alpha (float):                      学习率
+      num_iters (int):                    运行梯度下降的迭代次数
 
-    Returns:
-      w (ndarray): Shape (n,) or (n,1)    Updated values of parameters; matches incoming shape
-      b (scalar):                         Updated value of parameter
+    返回值:
+      w (ndarray): 形状 (n,) 或 (n,1)    更新后的参数值; 匹配输入形状
+      b (scalar):                         更新后的参数值
     """
-    # An array to store cost J and w's at each iteration primarily for graphing later
+    # 存储每次迭代的成本J和w的数组，主要用于后续绘图
     J_history = []
-    w = copy.deepcopy(w_in)  #avoid modifying global w within function
+    w = copy.deepcopy(w_in)  #避免在函数内修改全局w
     b = b_in
-    w = w.reshape(-1,1)      #prep for matrix operations
+    w = w.reshape(-1,1)      #为矩阵运算做准备
     y = y.reshape(-1,1)
     last_cost = np.Inf
 
     for i in range(num_iters):
 
-        # Calculate the gradient and update the parameters
+        # 计算梯度并更新参数
         dj_db,dj_dw = compute_gradient_matrix(X, y, w, b, logistic, lambda_)
 
-        # Update Parameters using w, b, alpha and gradient
+        # 使用w, b, alpha和梯度更新参数
         w = w - alpha * dj_dw
         b = b - alpha * dj_db
 
-        # Save cost J at each iteration
+        # 每次迭代保存成本J
         ccost = compute_cost_matrix(X, y, w, b, logistic, lambda_)
-        if Trace and i<100000:      # prevent resource exhaustion
+        if Trace and i<100000:      # 防止资源耗尽
             J_history.append( ccost )
 
-        # Print cost every at intervals 10 times or as many iterations if < 10
+        # 每隔10次迭代打印一次成本，如果迭代次数少于10则全部打印
         if i% math.ceil(num_iters / 10) == 0:
-            if verbose: print(f"Iteration {i:4d}: Cost {ccost}   ")
+            if verbose: print(f"迭代 {i:4d}: 成本 {ccost}   ")
             if verbose ==2: print(f"dj_db, dj_dw = {dj_db: 0.3f}, {dj_dw.reshape(-1)}")
 
             if ccost == last_cost:
                 alpha = alpha/10
-                print(f" alpha now {alpha}")
+                print(f" alpha 现在为 {alpha}")
             last_cost = ccost
 
-    return w.reshape(w_in.shape), b, J_history  #return final w,b and J history for graphing
+    return w.reshape(w_in.shape), b, J_history  #返回最终的w, b和J历史用于绘图
 
 def zscore_normalize_features(X):
     """
-    computes  X, zcore normalized by column
+    计算X, 按列zscore标准化
 
-    Args:
-      X (ndarray): Shape (m,n) input data, m examples, n features
+    参数:
+      X (ndarray): 形状 (m,n) 输入数据, m个样本, n个特征
 
-    Returns:
-      X_norm (ndarray): Shape (m,n)  input normalized by column
-      mu (ndarray):     Shape (n,)   mean of each feature
-      sigma (ndarray):  Shape (n,)   standard deviation of each feature
+    返回值:
+      X_norm (ndarray): 形状 (m,n)  按列标准化的输入
+      mu (ndarray):     形状 (n,)   每个特征的均值
+      sigma (ndarray):  形状 (n,)   每个特征的标准差
     """
-    # find the mean of each column/feature
-    mu     = np.mean(X, axis=0)                 # mu will have shape (n,)
-    # find the standard deviation of each column/feature
-    sigma  = np.std(X, axis=0)                  # sigma will have shape (n,)
-    # element-wise, subtract mu for that column from each example, divide by std for that column
+    # 求每列/特征的均值
+    mu     = np.mean(X, axis=0)                 # mu的形状为 (n,)
+    # 求每列/特征的标准差
+    sigma  = np.std(X, axis=0)                  # sigma的形状为 (n,)
+    # 逐元素地，从每个样本中减去该列的mu，除以该列的标准差
     X_norm = (X - mu) / sigma
 
     return X_norm, mu, sigma
 
-#check our work
+#检查我们的工作
 #from sklearn.preprocessing import scale
 #scale(X_orig, axis=0, with_mean=True, with_std=True, copy=True)
 
 ######################################################
-# Common Plotting Routines
+# 通用绘图例程
 ######################################################
 
 
 def plot_data(X, y, ax, pos_label="y=1", neg_label="y=0", s=80, loc='best' ):
-    """ plots logistic data with two axis """
-    # Find Indices of Positive and Negative Examples
+    """ 绘制包含两个轴的逻辑回归数据 """
+    # 找到正例和负例的索引
     pos = y == 1
     neg = y == 0
-    pos = pos.reshape(-1,)  #work with 1D or 1D y vectors
+    pos = pos.reshape(-1,)  #处理1D或1D y向量
     neg = neg.reshape(-1,)
 
-    # Plot examples
+    # 绘制样本
     ax.scatter(X[pos, 0], X[pos, 1], marker='x', s=s, c = 'red', label=pos_label)
     ax.scatter(X[neg, 0], X[neg, 1], marker='o', s=s, label=neg_label, facecolors='none', edgecolors=dlblue, lw=3)
     ax.legend(loc=loc)
@@ -267,24 +266,24 @@ def plot_data(X, y, ax, pos_label="y=1", neg_label="y=0", s=80, loc='best' ):
     ax.figure.canvas.footer_visible = False
 
 def plt_tumor_data(x, y, ax):
-    """ plots tumor data on one axis """
+    """ 在一个轴上绘制肿瘤数据 """
     pos = y == 1
     neg = y == 0
 
-    ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="malignant")
-    ax.scatter(x[neg], y[neg], marker='o', s=100, label="benign", facecolors='none', edgecolors=dlblue,lw=3)
+    ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="恶性")
+    ax.scatter(x[neg], y[neg], marker='o', s=100, label="良性", facecolors='none', edgecolors=dlblue,lw=3)
     ax.set_ylim(-0.175,1.1)
     ax.set_ylabel('y')
-    ax.set_xlabel('Tumor Size')
-    ax.set_title("Logistic Regression on Categorical Data")
+    ax.set_xlabel('肿瘤大小')
+    ax.set_title("分类数据上的逻辑回归")
 
     ax.figure.canvas.toolbar_visible = False
     ax.figure.canvas.header_visible = False
     ax.figure.canvas.footer_visible = False
 
-# Draws a threshold at 0.5
+# 在0.5处绘制阈值
 def draw_vthresh(ax,x):
-    """ draws a threshold """
+    """ 绘制阈值 """
     ylim = ax.get_ylim()
     xlim = ax.get_xlim()
     ax.fill_between([xlim[0], x], [ylim[1], ylim[1]], alpha=0.2, color=dlblue)
@@ -306,24 +305,24 @@ def draw_vthresh(ax,x):
 
 
 #-----------------------------------------------------
-# common interactive plotting routines
+# 通用交互式绘图例程
 #-----------------------------------------------------
 
 class button_manager:
-    ''' Handles some missing features of matplotlib check buttons
-    on init:
-        creates button, links to button_click routine,
-        calls call_on_click with active index and firsttime=True
-    on click:
-        maintains single button on state, calls call_on_click
+    ''' 处理matplotlib检查按钮的一些缺失功能
+    初始化时:
+        创建按钮, 链接到button_click例程,
+        使用活动索引和firsttime=True调用call_on_click
+    点击时:
+        维持单个按钮开启状态, 调用call_on_click
     '''
 
     #@output.capture()  # debug
     def __init__(self,fig, dim, labels, init, call_on_click):
         '''
         dim: (list)     [leftbottom_x,bottom_y,width,height]
-        labels: (list)  for example ['1','2','3','4','5','6']
-        init: (list)    for example [True, False, False, False, False, False]
+        labels: (list)  例如 ['1','2','3','4','5','6']
+        init: (list)    例如 [True, False, False, False, False, False]
         '''
         self.fig = fig
         self.ax = plt.axes(dim)  #lx,by,w,h
@@ -337,16 +336,16 @@ class button_manager:
     #@output.capture()  # debug
     def reinit(self):
         self.status = self.init_state
-        self.button.set_active(self.status.index(True))      #turn off old, will trigger update and set to status
+        self.button.set_active(self.status.index(True))      #关闭旧的, 将触发更新并设置为status
 
     #@output.capture()  # debug
     def button_click(self, event):
-        ''' maintains one-on state. If on-button is clicked, will process correctly '''
+        ''' 维持单个按钮开启状态。如果点击了开启按钮, 将正确处理 '''
         #new_status = self.button.get_status()
         #new = [self.status[i] ^ new_status[i] for i in range(len(self.status))]
         #newidx = new.index(True)
         self.button.eventson = False
-        self.button.set_active(self.status.index(True))  #turn off old or reenable if same
+        self.button.set_active(self.status.index(True))  #关闭旧的或重新启用相同的
         self.button.eventson = True
         self.status = self.button.get_status()
         self.call_on_click(self.status.index(True))

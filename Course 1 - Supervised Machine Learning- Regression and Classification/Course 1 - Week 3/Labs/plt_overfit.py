@@ -1,6 +1,6 @@
 """
 plot_overfit
-    class and assocaited routines that plot an interactive example of overfitting and its solutions
+    绘制过拟合及其解决方案的交互式示例的类和相关例程
 """
 import math
 from ipywidgets import Output
@@ -11,7 +11,7 @@ from lab_utils_common import np, plt, dlc, predict_logistic, plot_data, zscore_n
 
 def map_one_feature(X1, degree):
     """
-    Feature mapping function to polynomial features
+    特征映射函数，映射为多项式特征
     """
     X1 = np.atleast_1d(X1)
     out = []
@@ -27,7 +27,7 @@ def map_one_feature(X1, degree):
 
 def map_feature(X1, X2, degree):
     """
-    Feature mapping function to polynomial features
+    特征映射函数，映射为多项式特征
     """
     X1 = np.atleast_1d(X1)
     X2 = np.atleast_1d(X2)
@@ -52,50 +52,49 @@ def munge(base, exp):
 
 def plot_decision_boundary(ax, x0r,x1r, predict,  w, b, scaler = False, mu=None, sigma=None, degree=None):
     """
-    Plots a decision boundary
-     Args:
-      x0r : (array_like Shape (1,1)) range (min, max) of x0
-      x1r : (array_like Shape (1,1)) range (min, max) of x1
-      predict : function to predict z values
-      scalar : (boolean) scale data or not
+    绘制决策边界
+     参数:
+      x0r : (array_like Shape (1,1)) x0的范围 (最小值, 最大值)
+      x1r : (array_like Shape (1,1)) x1的范围 (最小值, 最大值)
+      predict : 预测z值的函数
+      scalar : (boolean) 是否缩放数据
     """
 
-    h = .01  # step size in the mesh
-    # create a mesh to plot in
+    h = .01  # 网格中的步长
+    # 创建用于绘图的网格
     xx, yy = np.meshgrid(np.arange(x0r[0], x0r[1], h),
                          np.arange(x1r[0], x1r[1], h))
 
-    # Plot the decision boundary. For that, we will assign a color to each
-    # point in the mesh [x_min, m_max]x[y_min, y_max].
+    # 绘制决策边界。为此，我们将为网格中的每个点分配一个颜色
     points = np.c_[xx.ravel(), yy.ravel()]
     Xm,_ = map_feature(points[:, 0], points[:, 1],degree)
     if scaler:
         Xm = (Xm - mu)/sigma
     Z = predict(Xm, w, b)
 
-    # Put the result into a color plot
+    # 将结果放入颜色图中
     Z = Z.reshape(xx.shape)
     contour = ax.contour(xx, yy, Z, levels = [0.5], colors='g')
     return contour
 
-# use this to test the above routine
+# 用于测试上述例程
 def plot_decision_boundary_sklearn(x0r, x1r, predict, degree,  scaler = False):
     """
-    Plots a decision boundary
-     Args:
-      x0r : (array_like Shape (1,1)) range (min, max) of x0
-      x1r : (array_like Shape (1,1)) range (min, max) of x1
-      degree: (int)                  degree of polynomial
-      predict : function to predict z values
-      scaler  : not sure
+    绘制决策边界
+     参数:
+      x0r : (array_like Shape (1,1)) x0的范围 (最小值, 最大值)
+      x1r : (array_like Shape (1,1)) x1的范围 (最小值, 最大值)
+      degree: (int)                  多项式的度数
+      predict : 预测z值的函数
+      scaler  : 不确定
     """
 
-    h = .01  # step size in the mesh
-    # create a mesh to plot in
+    h = .01  # 网格中的步长
+    # 创建用于绘图的网格
     xx, yy = np.meshgrid(np.arange(x0r[0], x0r[1], h),
                          np.arange(x1r[0], x1r[1], h))
 
-    # Plot the decision boundary. For that, we will assign a color to each
+    # 绘制决策边界。为此，我们将为网格中的每个点分配一个颜色
     # point in the mesh [x_min, m_max]x[y_min, y_max].
     points = np.c_[xx.ravel(), yy.ravel()]
     Xm = map_feature(points[:, 0], points[:, 1],degree)
@@ -103,34 +102,34 @@ def plot_decision_boundary_sklearn(x0r, x1r, predict, degree,  scaler = False):
         Xm = scaler.transform(Xm)
     Z = predict(Xm)
 
-    # Put the result into a color plot
+    # 将结果放入颜色图中
     Z = Z.reshape(xx.shape)
     plt.contour(xx, yy, Z, colors='g')
     #plot_data(X_train,y_train)
 
-#for debug, uncomment the #@output statments below for routines you want to get error output from
-# In the notebook that will call these routines, import  `output`
+#用于调试，取消下面#@output语句的注释以获取您想要获取错误输出的例程
+# 在调用这些例程的笔记本中，导入 `output`
 # from plt_overfit import overfit_example, output
-# then, in a cell where the error messages will be the output of..
+# 然后，在错误消息将作为输出的单元格中..
 #display(output)
 
-output = Output() # sends hidden error messages to display when using widgets
+output = Output() # 使用小部件时将隐藏的错误消息发送到显示
 
 class button_manager:
-    ''' Handles some missing features of matplotlib check buttons
-    on init:
-        creates button, links to button_click routine,
-        calls call_on_click with active index and firsttime=True
-    on click:
-        maintains single button on state, calls call_on_click
+    ''' 处理matplotlib检查按钮的一些缺失功能
+    初始化时:
+        创建按钮，链接到button_click例程，
+        使用活动索引和firsttime=True调用call_on_click
+    点击时:
+        维护单按钮状态，调用call_on_click
     '''
 
     @output.capture()  # debug
     def __init__(self,fig, dim, labels, init, call_on_click):
         '''
-        dim: (list)     [leftbottom_x,bottom_y,width,height]
-        labels: (list)  for example ['1','2','3','4','5','6']
-        init: (list)    for example [True, False, False, False, False, False]
+        dim: (list)     [左下x, 左下y, 宽度, 高度]
+        labels: (list)  例如 ['1','2','3','4','5','6']
+        init: (list)    例如 [True, False, False, False, False, False]
         '''
         self.fig = fig
         self.ax = plt.axes(dim)  #lx,by,w,h
@@ -148,7 +147,7 @@ class button_manager:
 
     @output.capture()  # debug
     def button_click(self, event):
-        ''' maintains one-on state. If on-button is clicked, will process correctly '''
+        ''' 维护单按钮状态。如果点击已激活的按钮，将正确处理 '''
         #new_status = self.button.get_status()
         #new = [self.status[i] ^ new_status[i] for i in range(len(self.status))]
         #newidx = new.index(True)
@@ -159,7 +158,7 @@ class button_manager:
         self.call_on_click(self.status.index(True))
 
 class overfit_example():
-    """ plot overfit example """
+    """ 绘制过拟合示例 """
     # pylint: disable=too-many-instance-attributes
     # pylint: disable=too-many-locals
     # pylint: disable=missing-function-docstring
@@ -182,7 +181,7 @@ class overfit_example():
         self.fig = fig
 
         self.axfitdata = plt.axes([0.26,0.124,0.12,0.1 ])  #lx,by,w,h
-        self.bfitdata  = Button(self.axfitdata , 'fit data', color=dlc['dlblue'])
+        self.bfitdata  = Button(self.axfitdata , '拟合数据', color=dlc['dlblue'])
         self.bfitdata.label.set_fontsize(12)
         self.bfitdata.on_clicked(self.fitdata_clicked)
 
@@ -194,10 +193,10 @@ class overfit_example():
 
         self.cid = fig.canvas.mpl_connect('button_press_event', self.add_data)
 
-        self.typebut = button_manager(fig, [0.4, 0.07,0.15,0.15], ["Regression", "Categorical"],
+        self.typebut = button_manager(fig, [0.4, 0.07,0.15,0.15], ["回归", "分类"],
                                        [False,True], self.toggle_type)
 
-        self.fig.text(0.1, 0.02+0.21, "Degree", fontsize=12)
+        self.fig.text(0.1, 0.02+0.21, "度数", fontsize=12)
         self.degrbut = button_manager(fig,[0.1,0.02,0.15,0.2 ], ['1','2','3','4','5','6'],
                                         [True, False, False, False, False, False], self.update_equation)
         if self.regularize:
@@ -240,8 +239,8 @@ class overfit_example():
 
         self.ax[0].plot(self.x_ideal, self.y_ideal, "--", color = "orangered", label="ideal", lw=1)
         plot_data(self.X, self.y, self.ax[0], s=10, loc='lower right')
-        self.ax[0].set_title("OverFitting Example: Categorical data set with noise")
-        self.ax[0].text(0.5,0.93, "Click on plot to add data. Hold [Shift] for blue(y=0) data.",
+        self.ax[0].set_title("过拟合示例: 带噪声的分类数据集")
+        self.ax[0].text(0.5,0.93, "点击图表添加数据。按住[Shift]添加蓝色(y=0)数据。",
                         fontsize=12, ha='center',transform=self.ax[0].transAxes, color=dlc["dlblue"])
         self.ax[0].set_xlabel(r"$x_0$")
         self.ax[0].set_ylabel(r"$x_1$")
@@ -264,11 +263,11 @@ class overfit_example():
 
         self.ax[0].scatter(self.X,self.y, label="y")
         self.ax[0].plot(self.x_ideal, self.y_ideal, "--", color = "orangered", label="y_ideal", lw=1)
-        self.ax[0].set_title("OverFitting Example: Regression Data Set (quadratic with noise)",fontsize = 14)
+        self.ax[0].set_title("过拟合示例: 回归数据集（带噪声的二次函数）",fontsize = 14)
         self.ax[0].set_xlabel("x")
         self.ax[0].set_ylabel("y")
         self.ax0ledgend = self.ax[0].legend(loc='lower right')
-        self.ax[0].text(0.5,0.93, "Click on plot to add data",
+        self.ax[0].text(0.5,0.93, "点击图表添加数据",
                         fontsize=12, ha='center',transform=self.ax[0].transAxes, color=dlc["dlblue"])
         if not redraw:
             self.xlim = self.ax[0].get_xlim()

@@ -1,6 +1,6 @@
 """ 
 lab_utils_uni.py
-    routines used in Course 1, Week2, labs1-3 dealing with single variables (univariate)
+    课程1第2周实验室1-3中使用的处理单变量（单变量）的例程
 """
 import numpy as np
 import matplotlib.pyplot as plt
@@ -17,35 +17,35 @@ dlcm = LinearSegmentedColormap.from_list(
         'dl_map', dlcolors, N=n_bin)
 
 ##########################################################
-# Plotting Routines
+# 绘图例程
 ##########################################################
 
 def plt_house_x(X, y,f_wb=None, ax=None):
-    ''' plot house with aXis '''
+    ''' 带坐标轴绘制房屋 '''
     if not ax:
         fig, ax = plt.subplots(1,1)
-    ax.scatter(X, y, marker='x', c='r', label="Actual Value")
+    ax.scatter(X, y, marker='x', c='r', label="实际值")
 
-    ax.set_title("Housing Prices")
-    ax.set_ylabel('Price (in 1000s of dollars)')
-    ax.set_xlabel(f'Size (1000 sqft)')
+    ax.set_title("房价")
+    ax.set_ylabel('价格（千美元）')
+    ax.set_xlabel(f'面积（千平方英尺）')
     if f_wb is not None:
-        ax.plot(X, f_wb,  c=dlblue, label="Our Prediction")
+        ax.plot(X, f_wb,  c=dlblue, label="我们的预测")
     ax.legend()
 
 
 def mk_cost_lines(x,y,w,b, ax):
-    ''' makes vertical cost lines'''
+    ''' 绘制垂直代价线'''
     cstr = "cost = (1/m)*("
     ctot = 0
-    label = 'cost for point'
+    label = '该点的代价'
     addedbreak = False
     for p in zip(x,y):
         f_wb_p = w*p[0]+b
         c_p = ((f_wb_p - p[1])**2)/2
         c_p_txt = c_p
         ax.vlines(p[0], p[1],f_wb_p, lw=3, color=dlpurple, ls='dotted', label=label)
-        label='' #just one
+        label='' #只显示一次
         cxy = [p[0], p[1] + (f_wb_p-p[1])/2]
         ax.annotate(f'{c_p_txt:0.0f}', xy=cxy, xycoords='data',color=dlpurple,
             xytext=(5, 0), textcoords='offset points')
@@ -59,7 +59,7 @@ def mk_cost_lines(x,y,w,b, ax):
     ax.text(0.15,0.02,cstr, transform=ax.transAxes, color=dlpurple)
 
 ##########
-# Cost lab
+# 代价实验室
 ##########
 
 
@@ -89,19 +89,19 @@ def plt_intuition(x_train, y_train):
         ax[1].scatter(w,cur_cost, s=100, color=dldarkred, zorder= 10, label= f"cost at w={w}")
         ax[1].hlines(cur_cost, ax[1].get_xlim()[0],w, lw=4, color=dlpurple, ls='dotted')
         ax[1].vlines(w, ax[1].get_ylim()[0],cur_cost, lw=4, color=dlpurple, ls='dotted')
-        ax[1].set_title("Cost vs. w, (b fixed at 100)")
-        ax[1].set_ylabel('Cost')
+        ax[1].set_title("代价 vs. w, (b固定为100)")
+        ax[1].set_ylabel('代价')
         ax[1].set_xlabel('w')
         ax[1].legend(loc='upper center')
-        fig.suptitle(f"Minimize Cost: Current Cost = {cur_cost:0.0f}", fontsize=12)
+        fig.suptitle(f"最小化代价: 当前代价 = {cur_cost:0.0f}", fontsize=12)
         plt.show()
 
-# this is the 2D cost curve with interactive slider
+# 这是带有交互滑块的2D代价曲线
 def plt_stationary(x_train, y_train):
-    # setup figure
+    # 设置图形
     fig = plt.figure( figsize=(9,8))
     #fig = plt.figure(constrained_layout=True,  figsize=(12,10))
-    fig.set_facecolor('#ffffff') #white
+    fig.set_facecolor('#ffffff') #白色
     fig.canvas.toolbar_position = 'top'
     #gs = GridSpec(2, 2, figure=fig, wspace = 0.01)
     gs = GridSpec(2, 2, figure=fig)
@@ -110,13 +110,13 @@ def plt_stationary(x_train, y_train):
     ax2 = fig.add_subplot(gs[1, :],  projection='3d')
     ax = np.array([ax0,ax1,ax2])
 
-    #setup useful ranges and common linspaces
+    #设置有用的范围和公共线性空间
     w_range = np.array([200-300.,200+300])
     b_range = np.array([50-300., 50+300])
     b_space  = np.linspace(*b_range, 100)
     w_space  = np.linspace(*w_range, 100)
 
-    # get cost for w,b ranges for contour and 3D
+    # 获取w,b范围的代价，用于等高线图和3D图
     tmp_b,tmp_w = np.meshgrid(b_space,w_space)
     z=np.zeros_like(tmp_b)
     for i in range(tmp_w.shape[0]):
@@ -124,25 +124,25 @@ def plt_stationary(x_train, y_train):
             z[i,j] = compute_cost(x_train, y_train, tmp_w[i][j], tmp_b[i][j] )
             if z[i,j] == 0: z[i,j] = 1e-6
 
-    w0=200;b=-100    #initial point
-    ### plot model w cost ###
+    w0=200;b=-100    #初始点
+    ### 绘制模型和代价 ###
     f_wb = np.dot(x_train,w0) + b
     mk_cost_lines(x_train,y_train,w0,b,ax[0])
     plt_house_x(x_train, y_train, f_wb=f_wb, ax=ax[0])
 
-    ### plot contour ###
+    ### 绘制等高线图 ###
     CS = ax[1].contour(tmp_w, tmp_b, np.log(z),levels=12, linewidths=2, alpha=0.7,colors=dlcolors)
-    ax[1].set_title('Cost(w,b)')
+    ax[1].set_title('代价(w,b)')
     ax[1].set_xlabel('w', fontsize=10)
     ax[1].set_ylabel('b', fontsize=10)
     ax[1].set_xlim(w_range) ; ax[1].set_ylim(b_range)
-    cscat  = ax[1].scatter(w0,b, s=100, color=dlblue, zorder= 10, label="cost with \ncurrent w,b")
+    cscat  = ax[1].scatter(w0,b, s=100, color=dlblue, zorder= 10, label="当前w,b的代价")
     chline = ax[1].hlines(b, ax[1].get_xlim()[0],w0, lw=4, color=dlpurple, ls='dotted')
     cvline = ax[1].vlines(w0, ax[1].get_ylim()[0],b, lw=4, color=dlpurple, ls='dotted')
-    ax[1].text(0.5,0.95,"Click to choose w,b",  bbox=dict(facecolor='white', ec = 'black'), fontsize = 10,
+    ax[1].text(0.5,0.95,"点击选择w,b",  bbox=dict(facecolor='white', ec = 'black'), fontsize = 10,
                 transform=ax[1].transAxes, verticalalignment = 'center', horizontalalignment= 'center')
 
-    #Surface plot of the cost function J(w,b)
+    #代价函数J(w,b)的曲面图
     ax[2].plot_surface(tmp_w, tmp_b, z,  cmap = dlcm, alpha=0.3, antialiased=True)
     ax[2].plot_wireframe(tmp_w, tmp_b, z, color='k', alpha=0.1)
     plt.xlabel("$w$")
@@ -152,7 +152,7 @@ def plt_stationary(x_train, y_train):
     ax[2].yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax[2].zaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax[2].set_zlabel("J(w, b)\n\n", rotation=90)
-    plt.title("Cost(w,b) \n [You can rotate this figure]", size=12)
+    plt.title("代价(w,b) \n [您可以旋转此图形]", size=12)
     ax[2].view_init(30, -120)
 
     return fig,ax, [cscat, chline, cvline]
@@ -174,23 +174,23 @@ class plt_update_onclick:
             bs = event.ydata
             cst = compute_cost(self.x_train, self.y_train, ws, bs)
 
-            # clear and redraw line plot
+            # 清除并重绘折线图
             self.ax[0].clear()
             f_wb = np.dot(self.x_train,ws) + bs
             mk_cost_lines(self.x_train,self.y_train,ws,bs,self.ax[0])
             plt_house_x(self.x_train, self.y_train, f_wb=f_wb, ax=self.ax[0])
 
-            # remove lines and re-add on countour plot and 3d plot
+            # 移除线条并在等高线图和3D图上重新添加
             for artist in self.dyn_items:
                 artist.remove()
 
-            a = self.ax[1].scatter(ws,bs, s=100, color=dlblue, zorder= 10, label="cost with \ncurrent w,b")
+            a = self.ax[1].scatter(ws,bs, s=100, color=dlblue, zorder= 10, label="当前w,b的代价")
             b = self.ax[1].hlines(bs, self.ax[1].get_xlim()[0],ws, lw=4, color=dlpurple, ls='dotted')
             c = self.ax[1].vlines(ws, self.ax[1].get_ylim()[0],bs, lw=4, color=dlpurple, ls='dotted')
             d = self.ax[1].annotate(f"Cost: {cst:.0f}", xy= (ws, bs), xytext = (4,4), textcoords = 'offset points',
                                bbox=dict(facecolor='white'), size = 10)
 
-            #Add point in 3D surface plot
+            #在3D曲面图中添加点
             e = self.ax[2].scatter3D(ws, bs,cst , marker='X', s=100)
 
             self.dyn_items = [a,b,c,d,e]
@@ -198,10 +198,10 @@ class plt_update_onclick:
 
 
 def soup_bowl():
-    """ Create figure and plot with a 3D projection"""
+    """ 创建图形并使用3D投影绘制"""
     fig = plt.figure(figsize=(8,8))
 
-    #Plot configuration
+    #绘图配置
     ax = fig.add_subplot(111, projection='3d')
     ax.xaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
     ax.yaxis.set_pane_color((1.0, 1.0, 1.0, 0.0))
@@ -209,11 +209,11 @@ def soup_bowl():
     ax.zaxis.set_rotate_label(False)
     ax.view_init(45, -120)
 
-    #Useful linearspaces to give values to the parameters w and b
+    #有用的线性空间，用于给参数w和b赋值
     w = np.linspace(-20, 20, 100)
     b = np.linspace(-20, 20, 100)
 
-    #Get the z value for a bowl-shaped cost function
+    #获取碗形代价函数的z值
     z=np.zeros((len(w), len(b)))
     j=0
     for x in w:
@@ -223,16 +223,16 @@ def soup_bowl():
             i+=1
         j+=1
 
-    #Meshgrid used for plotting 3D functions
+    #用于绘制3D函数的网格
     W, B = np.meshgrid(w, b)
 
-    #Create the 3D surface plot of the bowl-shaped cost function
+    #创建碗形代价函数的3D曲面图
     ax.plot_surface(W, B, z, cmap = "Spectral_r", alpha=0.7, antialiased=False)
     ax.plot_wireframe(W, B, z, color='k', alpha=0.1)
     ax.set_xlabel("$w$")
     ax.set_ylabel("$b$")
     ax.set_zlabel("$J(w,b)$", rotation=90)
-    ax.set_title("$J(w,b)$\n [You can rotate this figure]", size=15)
+    ax.set_title("$J(w,b)$\n [您可以旋转此图形]", size=15)
 
     plt.show()
 
@@ -259,7 +259,7 @@ def plt_contour_wgrad(x, y, hist, ax, w_range=[-100, 500, 5], b_range=[-500, 500
                    colors=[dlblue, dlorange, dldarkred, dlmagenta, dlpurple])
     ax.clabel(CS, inline=1, fmt='%1.0f', fontsize=10)
     ax.set_xlabel("w");  ax.set_ylabel("b")
-    ax.set_title('Contour plot of cost J(w,b), vs b,w with path of gradient descent')
+    ax.set_title('代价J(w,b)的等高线图，vs b,w，含梯度下降路径')
     w = w_final; b=b_final
     ax.hlines(b, ax.get_xlim()[0],w, lw=2, color=dlpurple, ls='dotted')
     ax.vlines(w, ax.get_ylim()[0],b, lw=2, color=dlpurple, ls='dotted')
@@ -289,13 +289,13 @@ def plt_divergence(p_hist, J_hist, x_train,y_train):
     fig = plt.figure(figsize=(12,5))
     plt.subplots_adjust( wspace=0 )
     gs = fig.add_gridspec(1, 5)
-    fig.suptitle(f"Cost escalates when learning rate is too large")
+    fig.suptitle(f"学习率过大时代价上升")
     #===============
-    #  First subplot
+    #  第一个子图
     #===============
     ax = fig.add_subplot(gs[:2], )
 
-    # Print w vs cost to see minimum
+    # 打印w vs 代价以查看最小值
     fix_b = 100
     w_array = np.arange(-70000, 70000, 1000)
     cost = np.zeros_like(w_array)
@@ -306,13 +306,13 @@ def plt_divergence(p_hist, J_hist, x_train,y_train):
 
     ax.plot(w_array, cost)
     ax.plot(x,v, c=dlmagenta)
-    ax.set_title("Cost vs w, b set to 100")
+    ax.set_title("代价 vs w, b固定为100")
     ax.set_ylabel('Cost')
     ax.set_xlabel('w')
     ax.xaxis.set_major_locator(MaxNLocator(2))
 
     #===============
-    # Second Subplot
+    # 第二个子图
     #===============
 
     tmp_b,tmp_w = np.meshgrid(np.arange(-35000, 35000, 500),np.arange(-70000, 70000, 500))
@@ -329,14 +329,14 @@ def plt_divergence(p_hist, J_hist, x_train,y_train):
     ax.set_xlabel('w', fontsize=16)
     ax.set_ylabel('b', fontsize=16)
     ax.set_zlabel('\ncost', fontsize=16)
-    plt.title('Cost vs (b, w)')
-    # Customize the view angle
+    plt.title('代价 vs (b, w)')
+    # 自定义视角
     ax.view_init(elev=20., azim=-65)
     ax.plot(x, y, v,c=dlmagenta)
 
     return
 
-# draw derivative line
+# 绘制导数线
 # y = m*(x - x1) + y1
 def add_line(dj_dx, x1, y1, d, ax):
     x = np.linspace(x1-d, x1+d,50)
@@ -352,11 +352,11 @@ def add_line(dj_dx, x1, y1, d, ax):
 
 def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
     #===============
-    #  First subplot
+    #  第一个子图
     #===============
     fig,ax = plt.subplots(1,2,figsize=(12,4))
 
-    # Print w vs cost to see minimum
+    # 打印w vs 代价以查看最小值
     fix_b = 100
     w_array = np.linspace(-100, 500, 50)
     w_array = np.linspace(0, 400, 50)
@@ -366,11 +366,11 @@ def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
         tmp_w = w_array[i]
         cost[i] = f_compute_cost(x_train, y_train, tmp_w, fix_b)
     ax[0].plot(w_array, cost,linewidth=1)
-    ax[0].set_title("Cost vs w, with gradient; b set to 100")
+    ax[0].set_title("代价 vs w, 含梯度; b固定为100")
     ax[0].set_ylabel('Cost')
     ax[0].set_xlabel('w')
 
-    # plot lines for fixed b=100
+    # 为固定b=100绘制线条
     for tmp_w in [100,200,300]:
         fix_b = 100
         dj_dw,dj_db = f_compute_gradient(x_train, y_train, tmp_w, fix_b )
@@ -378,7 +378,7 @@ def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
         add_line(dj_dw, tmp_w, j, 30, ax[0])
 
     #===============
-    # Second Subplot
+    # 第二个子图
     #===============
 
     tmp_b,tmp_w = np.meshgrid(np.linspace(-200, 200, 10), np.linspace(-100, 600, 10))
@@ -392,7 +392,7 @@ def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
     n=-2
     color_array = np.sqrt(((V-n)/2)**2 + ((U-n)/2)**2)
 
-    ax[1].set_title('Gradient shown in quiver plot')
+    ax[1].set_title('箭头图中显示的梯度')
     Q = ax[1].quiver(X, Y, U, V, color_array, units='width', )
     ax[1].quiverkey(Q, 0.9, 0.9, 2, r'$2 \frac{m}{s}$', labelpos='E',coordinates='figure')
     ax[1].set_xlabel("w"); ax[1].set_ylabel("b")

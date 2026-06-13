@@ -13,7 +13,7 @@ def sig(z):
 
 def map_feature(X1, X2):
     """
-    Feature mapping function to polynomial features    
+    特征映射函数，映射为多项式特征
     """
     X1 = np.atleast_1d(X1)
     X2 = np.atleast_1d(X2)
@@ -29,7 +29,7 @@ def plot_data(X, y, pos_label="y=1", neg_label="y=0"):
     positive = y == 1
     negative = y == 0
     
-    # Plot examples
+    # 绘制样本
     plt.plot(X[positive, 0], X[positive, 1], 'k+', label=pos_label)
     plt.plot(X[negative, 0], X[negative, 1], 'yo', label=neg_label)
     
@@ -51,15 +51,15 @@ def plot_decision_boundary(w, b, X, y):
         
         z = np.zeros((len(u), len(v)))
 
-        # Evaluate z = theta*x over the grid
+        # 在网格上计算 z = theta*x
         for i in range(len(u)):
             for j in range(len(v)):
-                z[i,j] = sig(np.dot(map_feature(u[i], v[j]), w) + b)
+                z[i,j] = sig(np.dot(map_feature(u[i], v[j]), w) + b).item()
         
-        # important to transpose z before calling contour       
+        # 在调用等高线之前转置z很重要
         z = z.T
         
-        # Plot z = 0.5
+        # 绘制 z = 0.5
         plt.contour(u,v,z, levels = [0.5], colors="g")
 
         
