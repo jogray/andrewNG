@@ -20,7 +20,7 @@ def plt_base(ax):
     b01 =  0  # -1
     w02 =  0  #  2
     b02 =  0  # -4
-    ax[0].plot(X, y, color = dlc["dlblue"], label="target")
+    ax[0].plot(X, y, color = dlc["dlblue"], label="目标")
     arts = []
     arts.extend( plt_yhat(ax[0], X, w00, b00, w01, b01, w02, b02) )
     _ = plt_unit(ax[1], X, w00, b00)   #Fixed
@@ -42,7 +42,7 @@ def plt_unit(ax, X, w, b):
     lpb = ax.plot(X, yhat, dlc["dlmagenta"], lw=1, label="a")
     return([lpa[0], lpb[0]])
 
-# if output is need for debug, put this in a cell and call ahead of time. Output will be below that cell.
+    # 如果需要调试输出，将此放在一个单元格中并提前调用。输出将在该单元格下方。
 #from ipywidgets import Output   #this line stays here
 #output = Output()               #this line stays here
 #display(output)                 #this line goes in notebook
@@ -51,7 +51,7 @@ def plt_relu_ex():
     artists = []
 
     fig = plt.figure()
-    fig.suptitle("Explore Non-Linear Activation")
+    fig.suptitle("探索非线性激活")
 
     gs = GridSpec(3, 2, width_ratios=[2, 1], height_ratios=[1, 1, 1])
     ax1 = fig.add_subplot(gs[0:2,0])
@@ -102,17 +102,17 @@ def plt_relu_ex():
     sw2.on_changed(update)
     sb2.on_changed(update)
 
-    ax[0].set_title(" Match Target ")
+    ax[0].set_title(" 匹配目标 ")
     ax[0].legend()
     ax[0].set_xlabel("x")
-    ax[1].set_title("Unit 0 (fixed) ")
+    ax[1].set_title("单元 0 (固定) ")
     ax[1].legend()
-    ax[2].set_title("Unit 1")
+    ax[2].set_title("单元 1")
     ax[2].legend() 
-    ax[3].set_title("Unit 2")
+    ax[3].set_title("单元 2")
     ax[3].legend()
     plt.tight_layout()
 
     plt.show()
-    return([sw1,sw2,sb1,sb2,artists]) # returned to keep a live reference to sliders
+    return([sw1,sw2,sb1,sb2,artists]) # 返回以保持滑块的活动引用
 

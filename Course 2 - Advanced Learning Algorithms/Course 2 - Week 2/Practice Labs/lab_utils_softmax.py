@@ -25,7 +25,7 @@ def plt_softmax(my_softmax):
     bar = ax[0].barh(z, height=0.6, width=[z0.val,z1.val,z2.val,z3.val], left=None, align='center')
     bars = bar.get_children()
     ax[0].set_xlim([0,10])
-    ax[0].set_title("z input to softmax")
+    ax[0].set_title("softmax的z输入")
 
     a = my_softmax(np.array([z0.val,z1.val,z2.val,z3.val]))
     anames = np.array(['a0','a1','a2','a3'])

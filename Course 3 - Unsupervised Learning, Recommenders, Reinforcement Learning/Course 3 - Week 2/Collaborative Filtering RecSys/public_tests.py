@@ -12,8 +12,8 @@ def test_cofi_cost_func(target):
     R_r = np.zeros((num_movies_r, num_users_r))
     
     J = target(X_r, W_r, b_r, Y_r, R_r, 2);
-    assert not np.isclose(J, 13.5), f"Wrong value. Got {J}. Did you multiply the regularization term by lambda_?"
-    assert np.isclose(J, 27), f"Wrong value. Expected {27}, got {J}. Check the regularization term"
+    assert not np.isclose(J, 13.5), f"值错误。得到 {J}。你是否将正则化项乘以了lambda_？"
+    assert np.isclose(J, 27), f"值错误。期望 {27}，得到 {J}。请检查正则化项"
     
     
     X_r = np.ones((num_movies_r, num_features_r))
@@ -22,10 +22,10 @@ def test_cofi_cost_func(target):
     Y_r = np.ones((num_movies_r, num_users_r))
     R_r = np.ones((num_movies_r, num_users_r))
 
-    # Evaluate cost function
+    # 计算代价函数
     J = target(X_r, W_r, b_r, Y_r, R_r, 0);
     
-    assert np.isclose(J, 90), f"Wrong value. Expected {90}, got {J}. Check the term without the regularization"
+    assert np.isclose(J, 90), f"值错误。期望 {90}，得到 {J}。请检查不含正则化的项"
     
     
     X_r = np.ones((num_movies_r, num_features_r))
@@ -34,10 +34,10 @@ def test_cofi_cost_func(target):
     Y_r = np.zeros((num_movies_r, num_users_r))
     R_r = np.ones((num_movies_r, num_users_r))
 
-    # Evaluate cost function
+    # 计算代价函数
     J = target(X_r, W_r, b_r, Y_r, R_r, 0);
     
-    assert np.isclose(J, 160), f"Wrong value. Expected {160}, got {J}. Check the term without the regularization"
+    assert np.isclose(J, 160), f"值错误。期望 {160}，得到 {J}。请检查不含正则化的项"
     
     X_r = np.ones((num_movies_r, num_features_r))
     W_r = np.ones((num_users_r, num_features_r))
@@ -45,10 +45,10 @@ def test_cofi_cost_func(target):
     Y_r = np.ones((num_movies_r, num_users_r))
     R_r = np.ones((num_movies_r, num_users_r))
 
-    # Evaluate cost function
+    # 计算代价函数
     J = target(X_r, W_r, b_r, Y_r, R_r, 1);
     
-    assert np.isclose(J, 103.5), f"Wrong value. Expected {103.5}, got {J}. Check the term without the regularization"
+    assert np.isclose(J, 103.5), f"值错误。期望 {103.5}，得到 {J}。请检查不含正则化的项"
     
     num_users_r = 3
     num_movies_r = 4 
@@ -69,10 +69,10 @@ def test_cofi_cost_func(target):
                     [0.37232161, 0.19890823, 0.13026598]])#np.random.rand(num_movies_r, num_users_r)
     R_r = np.array([[1, 0, 1], [1, 0, 0], [1, 0, 0], [0, 1, 0]])#(np.random.rand(num_movies_r, num_users_r) > 0.4) * 1
 
-    # Evaluate cost function
+    # 计算代价函数
     J = target(X_r, W_r, b_r, Y_r, R_r, 3);
     
-    assert np.isclose(J, 13.621929978531858, atol=1e-8), f"Wrong value. Expected {13.621929978531858}, got {J}."
+    assert np.isclose(J, 13.621929978531858, atol=1e-8), f"值错误。期望 {13.621929978531858}，得到 {J}。"
     
-    print('\033[92mAll tests passed!')
+    print('\033[92m所有测试通过！')
     

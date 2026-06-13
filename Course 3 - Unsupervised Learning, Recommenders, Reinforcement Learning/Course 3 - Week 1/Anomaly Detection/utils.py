@@ -16,12 +16,9 @@ def load_data_multi():
 
 def multivariate_gaussian(X, mu, var):
     """
-    Computes the probability 
-    density function of the examples X under the multivariate gaussian 
-    distribution with parameters mu and var. If var is a matrix, it is
-    treated as the covariance matrix. If var is a vector, it is treated
-    as the var values of the variances in each dimension (a diagonal
-    covariance matrix
+    计算样本X在多元高斯分布下的概率密度函数，
+    分布参数为mu和var。如果var是矩阵，则视为协方差矩阵。
+    如果var是向量，则视为每个维度的方差值（对角协方差矩阵）。
     """
     
     k = len(mu)
@@ -37,9 +34,8 @@ def multivariate_gaussian(X, mu, var):
         
 def visualize_fit(X, mu, var):
     """
-    This visualization shows you the 
-    probability density function of the Gaussian distribution. Each example
-    has a location (x1, x2) that depends on its feature values.
+    此可视化展示高斯分布的概率密度函数。
+    每个样本有一个位置(x1, x2)，由其特征值决定。
     """
     
     X1, X2 = np.meshgrid(np.arange(0, 35.5, 0.5), np.arange(0, 35.5, 0.5))
@@ -51,9 +47,9 @@ def visualize_fit(X, mu, var):
     if np.sum(np.isinf(Z)) == 0:
         plt.contour(X1, X2, Z, levels=10**(np.arange(-20., 1, 3)), linewidths=1)
         
-    # Set the title
-    plt.title("The Gaussian contours of the distribution fit to the dataset")
-    # Set the y-axis label
-    plt.ylabel('Throughput (mb/s)')
-    # Set the x-axis label
-    plt.xlabel('Latency (ms)')
+    # 设置标题
+    plt.title("拟合数据集的分布的高斯轮廓")
+    # 设置y轴标签
+    plt.ylabel('吞吐量 (mb/s)')
+    # 设置x轴标签
+    plt.xlabel('延迟 (ms)')

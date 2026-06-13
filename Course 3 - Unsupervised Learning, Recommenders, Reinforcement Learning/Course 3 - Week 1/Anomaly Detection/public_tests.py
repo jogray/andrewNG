@@ -6,14 +6,14 @@ def select_threshold_test(target):
     y_val = np.array([1] * 5 + [0] * 25)
     
     best_epsilon, best_F1 = target(y_val, p_val)
-    assert np.isclose(best_epsilon, 0.04, atol=0.3 / 1000), f"Wrong best_epsilon. Expected: {0.04} got: {best_epsilon}"
-    assert best_F1 == 1, f"Wrong best_F1. Expected: 1 got: {best_F1}"
+    assert np.isclose(best_epsilon, 0.04, atol=0.3 / 1000), f"best_epsilon错误。期望: {0.04} 得到: {best_epsilon}"
+    assert best_F1 == 1, f"best_F1错误。期望: 1 得到: {best_F1}"
     
     y_val = np.array([1] * 5 + [0] * 25)
-    y_val[2] = 0 # Introduce noise
+    y_val[2] = 0 # 引入噪声
     best_epsilon, best_F1 = target(y_val, p_val)
-    assert np.isclose(best_epsilon, 0.04, atol=0.3 / 1000), f"Wrong best_epsilon. Expected: {0.04} got: {best_epsilon}"
-    assert np.isclose(best_F1, 0.8888888), f"Wrong best_F1. Expected: 0.8888888 got: {best_F1}"
+    assert np.isclose(best_epsilon, 0.04, atol=0.3 / 1000), f"best_epsilon错误。期望: {0.04} 得到: {best_epsilon}"
+    assert np.isclose(best_F1, 0.8888888), f"best_F1错误。期望: 0.8888888 得到: {best_F1}"
     
     p_val = np.array([i / 1000 for i in range(50)])
     y_val = np.array([1] * 8 + [0] * 42)
@@ -24,9 +24,9 @@ def select_threshold_test(target):
     y_val = y_val[index]
 
     best_epsilon, best_F1 = target(y_val, p_val)
-    assert np.isclose(best_epsilon, 0.007, atol=0.05 / 1000), f"Wrong best_epsilon. Expected: {0.0070070} got: {best_epsilon}"
-    assert np.isclose(best_F1, 0.933333333), f"Wrong best_F1. Expected: 0.933333333 got: {best_F1}"
-    print("\033[92mAll tests passed!")
+    assert np.isclose(best_epsilon, 0.007, atol=0.05 / 1000), f"best_epsilon错误。期望: {0.0070070} 得到: {best_epsilon}"
+    assert np.isclose(best_F1, 0.933333333), f"best_F1错误。期望: 0.933333333 得到: {best_F1}"
+    print("\033[92m所有测试通过！")
     
 def estimate_gaussian_test(target):
     np.random.seed(273)
@@ -37,14 +37,14 @@ def estimate_gaussian_test(target):
     
     mu, var = target(X)
     
-    assert type(mu) == np.ndarray, f"Wrong type for mu. Expected: {np.ndarray} got: {type(mu)}"
-    assert type(var) == np.ndarray, f"Wrong type for var. Expected: {np.ndarray} got: {type(var)}"
+    assert type(mu) == np.ndarray, f"mu类型错误。期望: {np.ndarray} 得到: {type(mu)}"
+    assert type(var) == np.ndarray, f"var类型错误。期望: {np.ndarray} 得到: {type(var)}"
     
-    assert mu.shape == (X.shape[1],), f"Wrong shape for mu. Expected: {(X.shape[1],)} got: {mu.shape}"
-    assert type(var) == np.ndarray, f"Wrong shape for var. Expected: {(X.shape[1],)} got: {var.shape}"
+    assert mu.shape == (X.shape[1],), f"mu形状错误。期望: {(X.shape[1],)} 得到: {mu.shape}"
+    assert type(var) == np.ndarray, f"var形状错误。期望: {(X.shape[1],)} 得到: {var.shape}"
     
-    assert np.allclose(mu, [1., 2., 3.]), f"Wrong value for mu. Expected: {[1, 2, 3]} got: {mu}"
-    assert np.allclose(var, [0., 0., 0.]), f"Wrong value for var. Expected: {[0, 0, 0]} got: {var}"
+    assert np.allclose(mu, [1., 2., 3.]), f"mu值错误。期望: {[1, 2, 3]} 得到: {mu}"
+    assert np.allclose(var, [0., 0., 0.]), f"var值错误。期望: {[0, 0, 0]} 得到: {var}"
     
     X = np.array([[1, 2, 3], 
                   [2, 4, 6], 
@@ -52,14 +52,14 @@ def estimate_gaussian_test(target):
     
     mu, var = target(X)
     
-    assert type(mu) == np.ndarray, f"Wrong type for mu. Expected: {np.ndarray} got: {type(mu)}"
-    assert type(var) == np.ndarray, f"Wrong type for var. Expected: {np.ndarray} got: {type(var)}"
+    assert type(mu) == np.ndarray, f"mu类型错误。期望: {np.ndarray} 得到: {type(mu)}"
+    assert type(var) == np.ndarray, f"var类型错误。期望: {np.ndarray} 得到: {type(var)}"
     
-    assert mu.shape == (X.shape[1],), f"Wrong shape for mu. Expected: {(X.shape[1],)} got: {mu.shape}"
-    assert type(var) == np.ndarray, f"Wrong shape for var. Expected: {(X.shape[1],)} got: {var.shape}"
+    assert mu.shape == (X.shape[1],), f"mu形状错误。期望: {(X.shape[1],)} 得到: {mu.shape}"
+    assert type(var) == np.ndarray, f"var形状错误。期望: {(X.shape[1],)} 得到: {var.shape}"
     
-    assert np.allclose(mu, [2., 4., 6.]), f"Wrong value for mu. Expected: {[2., 4., 6.]} got: {mu}"
-    assert np.allclose(var, [2. / 3, 8. / 3., 18. / 3.]), f"Wrong value for var. Expected: {[2. / 3, 8. / 3., 18. / 3.]} got: {var}"
+    assert np.allclose(mu, [2., 4., 6.]), f"mu值错误。期望: {[2., 4., 6.]} 得到: {mu}"
+    assert np.allclose(var, [2. / 3, 8. / 3., 18. / 3.]), f"var值错误。期望: {[2. / 3, 8. / 3., 18. / 3.]} 得到: {var}"
     
     
     m = 500
@@ -69,13 +69,13 @@ def estimate_gaussian_test(target):
     
     mu, var = target(X)
     
-    assert type(mu) == np.ndarray, f"Wrong type for mu. Expected: {np.ndarray} got: {type(mu)}"
-    assert type(var) == np.ndarray, f"Wrong type for var. Expected: {np.ndarray} got: {type(var)}"
+    assert type(mu) == np.ndarray, f"mu类型错误。期望: {np.ndarray} 得到: {type(mu)}"
+    assert type(var) == np.ndarray, f"var类型错误。期望: {np.ndarray} 得到: {type(var)}"
     
-    assert mu.shape == (X.shape[1],), f"Wrong shape for mu. Expected: {(X.shape[1],)} got: {mu.shape}"
-    assert type(var) == np.ndarray, f"Wrong shape for var. Expected: {(X.shape[1],)} got: {var.shape}"
+    assert mu.shape == (X.shape[1],), f"mu形状错误。期望: {(X.shape[1],)} 得到: {mu.shape}"
+    assert type(var) == np.ndarray, f"var形状错误。期望: {(X.shape[1],)} 得到: {var.shape}"
     
-    assert np.allclose(mu, [0., 1., 3.], atol=0.2), f"Wrong value for mu. Expected: {[0, 1, 3]} got: {mu}"
-    assert np.allclose(var, np.square([1., 2., 1.5]), atol=0.2), f"Wrong value for var. Expected: {np.square([1., 2., 1.5])} got: {var}"
+    assert np.allclose(mu, [0., 1., 3.], atol=0.2), f"mu值错误。期望: {[0, 1, 3]} 得到: {mu}"
+    assert np.allclose(var, np.square([1., 2., 1.5]), atol=0.2), f"var值错误。期望: {np.square([1., 2., 1.5])} 得到: {var}"
     
-    print("\033[92mAll tests passed!")
+    print("\033[92m所有测试通过！")

@@ -8,28 +8,28 @@ def test_network(target):
     num_actions = 4
     state_size = 8
     i = 0
-    assert len(target.layers) == 3, f"Wrong number of layers. Expected 3 but got {len(target.layers)}"
+    assert len(target.layers) == 3, f"层数错误。期望 3 但得到 {len(target.layers)}"
     assert target.input.shape.as_list() == [None, state_size], \
-        f"Wrong input shape. Expected [None,  400] but got {target.input.shape.as_list()}" 
+        f"输入形状错误。期望 [None, 400] 但得到 {target.input.shape.as_list()}" 
     expected = [[Dense, [None, 64], relu],
                 [Dense, [None, 64], relu],
                 [Dense, [None, num_actions], linear]]
 
     for layer in target.layers:
         assert type(layer) == expected[i][0], \
-            f"Wrong type in layer {i}. Expected {expected[i][0]} but got {type(layer)}"
+            f"第 {i} 层类型错误。期望 {expected[i][0]} 但得到 {type(layer)}"
         assert layer.output.shape.as_list() == expected[i][1], \
-            f"Wrong number of units in layer {i}. Expected {expected[i][1]} but got {layer.output.shape.as_list()}"
+            f"第 {i} 层单元数错误。期望 {expected[i][1]} 但得到 {layer.output.shape.as_list()}"
         assert layer.activation == expected[i][2], \
-            f"Wrong activation in layer {i}. Expected {expected[i][2]} but got {layer.activation}"
+            f"第 {i} 层激活函数错误。期望 {expected[i][2]} 但得到 {layer.activation}"
         i = i + 1
 
-    print("\033[92mAll tests passed!")
+    print("\033[92m所有测试通过!")
     
 def test_optimizer(target, ALPHA):
-    assert type(target) == Adam, f"Wrong optimizer. Expected: {Adam}, got: {target}"
-    assert np.isclose(target.learning_rate.numpy(), ALPHA), f"Wrong alpha. Expected: {ALPHA}, got: {target.learning_rate.numpy()}"
-    print("\033[92mAll tests passed!")
+    assert type(target) == Adam, f"优化器错误。期望: {Adam}, 得到: {target}"
+    assert np.isclose(target.learning_rate.numpy(), ALPHA), f"学习率错误。期望: {ALPHA}, 得到: {target.learning_rate.numpy()}"
+    print("\033[92m所有测试通过!")
     
     
 def test_compute_loss(target):
@@ -56,24 +56,24 @@ def test_compute_loss(target):
     loss = target((states, actions, rewards, next_states, done_vals), 0.995, q_network_random, target_q_network_random)
     
 
-    assert np.isclose(loss, 0.6991737), f"Wrong value. Expected {0.6991737}, got {loss}"
+    assert np.isclose(loss, 0.6991737), f"值错误。期望 {0.6991737}, 得到 {loss}"
 
-    # Test when episode terminates
+    # 测试回合终止时的情况
     done_vals = np.float32(np.ones((64,)))
     loss = target((states, actions, rewards, next_states, done_vals), 0.995, q_network_ones, target_q_network_ones)
-    assert np.isclose(loss, 0.343270182), f"Wrong value. Expected {0.343270182}, got {loss}"
+    assert np.isclose(loss, 0.343270182), f"值错误。期望 {0.343270182}, 得到 {loss}"
       
-    # Test MSE with parameters A = B
+    # 测试参数 A = B 时的 MSE
     done_vals = np.float32((np.random.uniform(0, 1, size=(64,)) > 0.96) * 1)
     rewards = np.float32(np.ones((64, )))
     loss = target((states, actions, rewards, next_states, done_vals), 0, q_network_ones, target_q_network_ones)
-    assert np.isclose(loss, 0), f"Wrong value. Expected {0}, got {loss}"
+    assert np.isclose(loss, 0), f"值错误。期望 {0}, 得到 {loss}"
  
-    # Test MSE with parameters A = 0 and B = 1
+    # 测试参数 A = 0 且 B = 1 时的 MSE
     done_vals = np.float32((np.random.uniform(0, 1, size=(64,)) > 0.96) * 1)
     rewards = np.float32(np.zeros((64, )))
     loss = target((states, actions, rewards, next_states, done_vals), 0, q_network_ones, target_q_network_ones)
-    assert np.isclose(loss, 1), f"Wrong value. Expected {1}, got {loss}"
+    assert np.isclose(loss, 1), f"值错误。期望 {1}, 得到 {loss}"
 
-    print("\033[92mAll tests passed!")
+    print("\033[92m所有测试通过!")
     

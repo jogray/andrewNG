@@ -1,7 +1,7 @@
 """
-Utilities module containing helper functions for the Deep Q-Learning - Lunar Lander
-Jupyter notebook (C3_W3_A1_Assignment) from DeepLearning.AI's "Unsupervised Learning,
-Recommenders, Reinforcement Learning" course on Coursera.
+工具模块，包含 Deep Q-Learning - Lunar Lander
+Jupyter notebook (C3_W3_A1_Assignment) 的辅助函数，来自 DeepLearning.AI 的
+"无监督学习、推荐系统、强化学习" Coursera 课程。
 """
 
 import base64
@@ -16,11 +16,11 @@ import numpy as np
 import pandas as pd
 import tensorflow as tf
 
-SEED = 0  # Seed for the pseudo-random number generator.
-MINIBATCH_SIZE = 64  # Mini-batch size.
-TAU = 1e-3  # Soft update parameter.
-E_DECAY = 0.995  # ε-decay rate for the ε-greedy policy.
-E_MIN = 0.01  # Minimum ε value for the ε-greedy policy.
+SEED = 0  # 伪随机数生成器的种子。
+MINIBATCH_SIZE = 64  # 小批量大小。
+TAU = 1e-3  # 软更新参数。
+E_DECAY = 0.995  # ε-贪婪策略的 ε 衰减率。
+E_MIN = 0.01  # ε-贪婪策略的最小 ε 值。
 
 
 random.seed(SEED)
@@ -28,32 +28,30 @@ random.seed(SEED)
 
 def get_experiences(memory_buffer):
     """
-    Returns a random sample of experience tuples drawn from the memory buffer.
+    从经验回放缓冲区中随机采样一批经验元组。
 
-    Retrieves a random sample of experience tuples from the given memory_buffer and
-    returns them as TensorFlow Tensors. The size of the random sample is determined by
-    the mini-batch size (MINIBATCH_SIZE). 
+    从给定的 memory_buffer 中随机采样一批经验元组，并将其转换为
+    TensorFlow 张量返回。随机样本的大小由小批量大小 (MINIBATCH_SIZE) 决定。
     
-    Args:
+    参数:
         memory_buffer (deque):
-            A deque containing experiences. The experiences are stored in the memory
-            buffer as namedtuples: namedtuple("Experience", field_names=["state",
+            包含经验的双端队列。经验以 namedtuple 的形式存储在经验回放缓冲区中:
+            namedtuple("Experience", field_names=["state",
             "action", "reward", "next_state", "done"]).
 
-    Returns:
-        A tuple (states, actions, rewards, next_states, done_vals) where:
+    返回:
+        一个元组 (states, actions, rewards, next_states, done_vals)，其中:
 
-            - states are the starting states of the agent.
-            - actions are the actions taken by the agent from the starting states.
-            - rewards are the rewards received by the agent after taking the actions.
-            - next_states are the new states of the agent after taking the actions.
-            - done_vals are the boolean values indicating if the episode ended.
+            - states 是智能体的起始状态。
+            - actions 是智能体从起始状态采取的动作。
+            - rewards 是智能体采取动作后获得的奖励。
+            - next_states 是智能体采取动作后的新状态。
+            - done_vals 是指示回合是否结束的布尔值。
 
-        All tuple elements are TensorFlow Tensors whose shape is determined by the
-        mini-batch size and the given Gym environment. For the Lunar Lander environment
-        the states and next_states will have a shape of [MINIBATCH_SIZE, 8] while the
-        actions, rewards, and done_vals will have a shape of [MINIBATCH_SIZE]. All
-        TensorFlow Tensors have elements with dtype=tf.float32.
+        所有元组元素都是 TensorFlow 张量，其形状由小批量大小和给定的
+        Gym 环境决定。对于 Lunar Lander 环境，states 和 next_states 的形状为
+        [MINIBATCH_SIZE, 8]，而 actions、rewards 和 done_vals 的形状为
+        [MINIBATCH_SIZE]。所有 TensorFlow 张量的元素类型为 tf.float32。
     """
 
     experiences = random.sample(memory_buffer, k=MINIBATCH_SIZE)
@@ -78,26 +76,25 @@ def get_experiences(memory_buffer):
 
 def check_update_conditions(t, num_steps_upd, memory_buffer):
     """
-    Determines if the conditions are met to perform a learning update.
+    判断是否满足执行学习更新的条件。
 
-    Checks if the current time step t is a multiple of num_steps_upd and if the
-    memory_buffer has enough experience tuples to fill a mini-batch (for example, if the
-    mini-batch size is 64, then the memory buffer should have more than 64 experience
-    tuples in order to perform a learning update).
+    检查当前时间步 t 是否为 num_steps_upd 的倍数，以及 memory_buffer
+    是否有足够的经验元组来填满一个小批量（例如，如果小批量大小为 64，
+    则经验回放缓冲区应包含超过 64 个经验元组才能执行学习更新）。
     
-    Args:
+    参数:
         t (int):
-            The current time step.
+            当前时间步。
         num_steps_upd (int):
-            The number of time steps used to determine how often to perform a learning
-            update. A learning update is only performed every num_steps_upd time steps.
+            用于确定执行学习更新频率的时间步数。每经过 num_steps_upd 个
+            时间步才执行一次学习更新。
         memory_buffer (deque):
-            A deque containing experiences. The experiences are stored in the memory
-            buffer as namedtuples: namedtuple("Experience", field_names=["state",
+            包含经验的双端队列。经验以 namedtuple 的形式存储在经验回放缓冲区中:
+            namedtuple("Experience", field_names=["state",
             "action", "reward", "next_state", "done"]).
 
-    Returns:
-       A boolean that will be True if conditions are met and False otherwise. 
+    返回:
+       一个布尔值，如果条件满足则为 True，否则为 False。
     """
 
     if (t + 1) % num_steps_upd == 0 and len(memory_buffer) > MINIBATCH_SIZE:
@@ -108,17 +105,16 @@ def check_update_conditions(t, num_steps_upd, memory_buffer):
 
 def get_new_eps(epsilon):
     """
-    Updates the epsilon value for the ε-greedy policy.
+    更新 ε-贪婪策略的 epsilon 值。
     
-    Gradually decreases the value of epsilon towards a minimum value (E_MIN) using the
-    given ε-decay rate (E_DECAY).
+    使用给定的 ε 衰减率 (E_DECAY) 逐渐将 epsilon 值降低到最小值 (E_MIN)。
 
-    Args:
+    参数:
         epsilon (float):
-            The current value of epsilon.
+            当前的 epsilon 值。
 
-    Returns:
-       A float with the updated value of epsilon.
+    返回:
+       一个浮点数，为更新后的 epsilon 值。
     """
 
     return max(E_MIN, E_DECAY * epsilon)
@@ -126,24 +122,22 @@ def get_new_eps(epsilon):
 
 def get_action(q_values, epsilon=0.0):
     """
-    Returns an action using an ε-greedy policy.
+    使用 ε-贪婪策略返回一个动作。
 
-    This function will return an action according to the following rules:
-        - With probability epsilon, it will return an action chosen at random.
-        - With probability (1 - epsilon), it will return the action that yields the
-        maximum Q value in q_values.
+    该函数将根据以下规则返回动作：
+        - 以 epsilon 的概率，返回一个随机选择的动作。
+        - 以 (1 - epsilon) 的概率，返回 q_values 中最大 Q 值对应的
     
-    Args:
+    参数:
         q_values (tf.Tensor):
-            The Q values returned by the Q-Network. For the Lunar Lander environment
-            this TensorFlow Tensor should have a shape of [1, 4] and its elements should
-            have dtype=tf.float32. 
+            Q 网络返回的 Q 值。对于 Lunar Lander 环境，该 TensorFlow 张量的
+            形状应为 [1, 4]，其元素类型应为 tf.float32。
         epsilon (float):
-            The current value of epsilon.
+            当前的 epsilon 值。
 
-    Returns:
-       An action (numpy.int64). For the Lunar Lander environment, actions are
-       represented by integers in the closed interval [0,3].
+    返回:
+       一个动作 (numpy.int64)。对于 Lunar Lander 环境，动作用闭区间 [0,3]
+       内的整数表示。
     """
 
     if random.random() > epsilon:
@@ -154,20 +148,19 @@ def get_action(q_values, epsilon=0.0):
 
 def update_target_network(q_network, target_q_network):
     """
-    Updates the weights of the target Q-Network using a soft update.
+    使用软更新方式更新目标 Q 网络的权重。
     
-    The weights of the target_q_network are updated using the soft update rule:
+    目标 Q 网络 (target_q_network) 的权重使用软更新规则进行更新：
     
                     w_target = (TAU * w) + (1 - TAU) * w_target
     
-    where w_target are the weights of the target_q_network, TAU is the soft update
-    parameter, and w are the weights of the q_network.
+    其中 w_target 是目标 Q 网络的权重，TAU 是软更新参数，w 是 Q 网络的权重。
     
-    Args:
+    参数:
         q_network (tf.keras.Sequential): 
-            The Q-Network. 
+            Q 网络。
         target_q_network (tf.keras.Sequential):
-            The Target Q-Network.
+            目标 Q 网络。
     """
 
     for target_weights, q_net_weights in zip(
@@ -178,31 +171,27 @@ def update_target_network(q_network, target_q_network):
 
 def plot_history(point_history, **kwargs):
     """
-    Plots the total number of points received by the agent after each episode together
-    with the moving average (rolling mean). 
+    绘制智能体在每个回合后获得的总分数以及移动平均值（滚动均值）。
 
-    Args:
+    参数:
         point_history (list):
-            A list containing the total number of points the agent received after each
-            episode.
-        **kwargs: optional
+            一个列表，包含智能体在每个回合后获得的总分数。
+        **kwargs: 可选参数
             window_size (int):
-                Size of the window used to calculate the moving average (rolling mean).
-                This integer determines the fixed number of data points used for each
-                window. The default window size is set to 10% of the total number of
-                data points in point_history, i.e. if point_history has 200 data points
-                the default window size will be 20.
+                用于计算移动平均值（滚动均值）的窗口大小。该整数决定每个窗口
+                使用的固定数据点数量。默认窗口大小设置为 point_history 中总数据
+                点数的 10%，例如如果 point_history 有 200 个数据点，默认窗口
+                大小将为 20。
             lower_limit (int):
-                The lower limit of the x-axis in data coordinates. Default value is 0.
+                x 轴在数据坐标中的下限。默认值为 0。
             upper_limit (int):
-                The upper limit of the x-axis in data coordinates. Default value is
-                len(point_history).
+                x 轴在数据坐标中的上限。默认值为 len(point_history)。
             plot_rolling_mean_only (bool):
-                If True, only plots the moving average (rolling mean) without the point
-                history. Default value is False.
+                如果为 True，则只绘制移动平均值（滚动均值）而不绘制原始数据点。
+                默认值为 False。
             plot_data_only (bool):
-                If True, only plots the point history without the moving average.
-                Default value is False.
+                如果为 True，则只绘制原始数据点而不绘制移动平均值。
+                默认值为 False。
     """
 
     lower_limit = 0
@@ -231,10 +220,10 @@ def plot_history(point_history, **kwargs):
 
     points = point_history[lower_limit:upper_limit]
 
-    # Generate x-axis for plotting.
+    # 生成用于绘图的 x 轴。
     episode_num = [x for x in range(lower_limit, upper_limit)]
 
-    # Use Pandas to calculate the rolling mean (moving average).
+    # 使用 Pandas 计算滚动均值（移动平均）。
     rolling_mean = pd.DataFrame(points).rolling(window_size).mean()
 
     plt.figure(figsize=(10, 7), facecolor="white")
@@ -263,48 +252,42 @@ def plot_history(point_history, **kwargs):
 
 def display_table(current_state, action, next_state, reward, done):
     """
-    Displays a table containing the current state, action, next state, reward, and done
-    values from Gym's Lunar Lander environment.
+    显示一个表格，包含 Gym Lunar Lander 环境中的当前状态、动作、下一状态、
+    奖励和终止标志值。
 
-    All floating point numbers in the table are displayed rounded to 3 decimal places
-    and actions are displayed using their labels instead of their numerical value (i.e
-    if action = 0, the action will be printed as "Do nothing" instead of "0").
+    表格中所有浮点数显示时四舍五入到小数点后 3 位，动作使用其标签名称
+    而非数值显示（即如果 action = 0，动作将显示为 "Do nothing" 而非 "0"）。
 
-    Args:
+    参数:
         current_state (numpy.ndarray):
-            The current state vector returned by the Lunar Lander environment 
-            before an action is taken
+            Lunar Lander 环境在采取动作前返回的当前状态向量。
         action (int):
-            The action taken by the agent. In the Lunar Lander environment, actions are
-            represented by integers in the closed interval [0,3] corresponding to:
+            智能体采取的动作。在 Lunar Lander 环境中，动作用闭区间 [0,3] 内的
+            整数表示，对应于：
                 - Do nothing = 0
                 - Fire right engine = 1
                 - Fire main engine = 2
                 - Fire left engine = 3
         next_state (numpy.ndarray):
-            The state vector returned by the Lunar Lander environment after the agent
-            takes an action, i.e the observation returned after running a single time
-            step of the environment's dynamics using env.step(action).
+            智能体采取动作后 Lunar Lander 环境返回的状态向量，即使用
+            env.step(action) 运行单个时间步后返回的观测值。
         reward (numpy.float64):
-            The reward returned by the Lunar Lander environment after the agent takes an
-            action, i.e the reward returned after running a single time step of the
-            environment's dynamics using env.step(action).
+            智能体采取动作后 Lunar Lander 环境返回的奖励，即使用
+            env.step(action) 运行单个时间步后返回的奖励。
         done (bool):
-            The done value returned by the Lunar Lander environment after the agent
-            takes an action, i.e the done value returned after running a single time
-            step of the environment's dynamics using env.step(action).
+            智能体采取动作后 Lunar Lander 环境返回的终止标志值，即使用
+            env.step(action) 运行单个时间步后返回的终止标志值。
     
-    Returns:
+    返回:
         table (Pandas Dataframe):
-            A dataframe containing the current_state, action, next_state, reward,
-            and done values. This will result in the table being displayed in the
-            Jupyter Notebook.
+            一个包含 current_state、action、next_state、reward 和 done 值的
+            数据框。这将使表格在 Jupyter Notebook 中显示。
     """
     
-    STATE_VECTOR_COL_NAME = 'State Vector'
-    DERIVED_COL_NAME = 'Derived from the State Vector (the closer to zero, the better)'
+    STATE_VECTOR_COL_NAME = '状态向量'
+    DERIVED_COL_NAME = '从状态向量推导（越接近零越好）'
     
-    # States
+    # 状态
     add_derived_info = lambda state: np.hstack([
         state, 
         [(state[0]**2 + state[1]**2)**.5],
@@ -322,35 +305,35 @@ def display_table(current_state, action, next_state, reward, done):
     ]).T
     
     get_state = lambda idx, type=np.float32: dict(zip(
-        ['Current State', 'Next State'], 
+        ['当前状态', '下一状态'], 
         states[idx].astype(type)
     ))
 
-    # Actions
+    # 动作
     action_labels = [
-        "Do nothing",
-        "Fire right engine",
-        "Fire main engine",
-        "Fire left engine",
+        "不操作",
+        "点燃右引擎",
+        "点燃主引擎",
+        "点燃左引擎",
     ]
 
     display(
         pd.DataFrame({
-            ('', '', ''): {'Action': action_labels[action], 'Reward': reward, 'Episode Terminated': done},
-            (STATE_VECTOR_COL_NAME, 'Coordinate', 'X (Horizontal)'): get_state(0),
-            (STATE_VECTOR_COL_NAME, 'Coordinate', 'Y (Vertical)'): get_state(1),
-            (STATE_VECTOR_COL_NAME, 'Velocity', 'X (Horizontal)'): get_state(2),
-            (STATE_VECTOR_COL_NAME, 'Velocity', 'Y (Vertical)'): get_state(3),
-            (STATE_VECTOR_COL_NAME, 'Tilting', 'Angle'): get_state(4),
-            (STATE_VECTOR_COL_NAME, 'Tilting', 'Angular Velocity'): get_state(5),
-            (STATE_VECTOR_COL_NAME, 'Ground contact', 'Left Leg?'): get_state(6, np.bool),
-            (STATE_VECTOR_COL_NAME, 'Ground contact', 'Right Leg?'): get_state(7, np.bool),
-            (DERIVED_COL_NAME, 'Distance from landing pad', ''): get_state(8),
-            (DERIVED_COL_NAME, 'Velocity', ''): get_state(9),
-            (DERIVED_COL_NAME, 'Tilting Angle (absolute value)', ''): get_state(10),
+            ('', '', ''): {'动作': action_labels[action], '奖励': reward, '回合终止': done},
+            (STATE_VECTOR_COL_NAME, '坐标', 'X (水平)'): get_state(0),
+            (STATE_VECTOR_COL_NAME, '坐标', 'Y (垂直)'): get_state(1),
+            (STATE_VECTOR_COL_NAME, '速度', 'X (水平)'): get_state(2),
+            (STATE_VECTOR_COL_NAME, '速度', 'Y (垂直)'): get_state(3),
+            (STATE_VECTOR_COL_NAME, '倾斜', '角度'): get_state(4),
+            (STATE_VECTOR_COL_NAME, '倾斜', '角速度'): get_state(5),
+            (STATE_VECTOR_COL_NAME, '地面接触', '左腿?'): get_state(6, np.bool),
+            (STATE_VECTOR_COL_NAME, '地面接触', '右腿?'): get_state(7, np.bool),
+            (DERIVED_COL_NAME, '距着陆台距离', ''): get_state(8),
+            (DERIVED_COL_NAME, '速度', ''): get_state(9),
+            (DERIVED_COL_NAME, '倾斜角度 (绝对值)', ''): get_state(10),
         })\
             .fillna('')\
-            .reindex(['Current State', 'Action', 'Next State', 'Reward', 'Episode Terminated'])\
+            .reindex(['当前状态', '动作', '下一状态', '奖励', '回合终止'])\
             .style\
             .applymap(lambda x: 'background-color : grey' if x == '' else '')\
             .set_table_styles(
@@ -364,16 +347,14 @@ def display_table(current_state, action, next_state, reward, done):
 
 def embed_mp4(filename):
     """
-    Embeds an MP4 video file in a Jupyter notebook.
+    在 Jupyter notebook 中嵌入 MP4 视频文件。
     
-    Args:
+    参数:
         filename (string):
-            The path to the the MP4 video file that will be embedded (i.e.
-            "./videos/lunar_lander.mp4").
+            要嵌入的 MP4 视频文件的路径（例如 "./videos/lunar_lander.mp4"）。
     
-    Returns:
-        Returns a display object from the given video file. This will result in the
-        video being displayed in the Jupyter Notebook.
+    返回:
+        返回一个来自给定视频文件的 display 对象。这将使视频在 Jupyter Notebook 中显示。
     """
 
     video = open(filename, "rb").read()
@@ -391,31 +372,27 @@ def embed_mp4(filename):
 
 def create_video(filename, env, q_network, fps=30):
     """
-    Creates a video of an agent interacting with a Gym environment.
+    创建智能体与 Gym 环境交互的视频。
 
-    The agent will interact with the given env environment using the q_network to map
-    states to Q values and using a greedy policy to choose its actions (i.e it will
-    choose the actions that yield the maximum Q values).
+    智能体将使用 q_network 将状态映射到 Q 值，并使用贪婪策略选择动作
+    （即选择产生最大 Q 值的动作）与给定的 env 环境进行交互。
     
-    The video will be saved to a file with the given filename. The video format must be
-    specified in the filename by providing a file extension (.mp4, .gif, etc..). If you 
-    want to embed the video in a Jupyter notebook using the embed_mp4 function, then the
-    video must be saved as an MP4 file. 
+    视频将保存到具有给定文件名的文件中。视频格式必须通过提供文件扩展名
+    在文件名中指定（.mp4、.gif 等）。如果您想使用 embed_mp4 函数将视频
+    嵌入 Jupyter notebook，则视频必须保存为 MP4 文件。
     
-    Args:
+    参数:
         filename (string):
-            The path to the file to which the video will be saved. The video format will
-            be selected based on the filename. Therefore, the video format must be
-            specified in the filename by providing a file extension (i.e.
-            "./videos/lunar_lander.mp4"). To see a list of supported formats see the
-            imageio documentation: https://imageio.readthedocs.io/en/v2.8.0/formats.html
+            视频将保存到的文件路径。视频格式将根据文件名自动选择。因此，必须
+            通过提供文件扩展名在文件名中指定视频格式（例如
+            "./videos/lunar_lander.mp4"）。要查看支持的格式列表，请参阅
+            imageio 文档: https://imageio.readthedocs.io/en/v2.8.0/formats.html
         env (Gym Environment): 
-            The Gym environment the agent will interact with.
+            智能体将与之交互的 Gym 环境。
         q_network (tf.keras.Sequential):
-            A TensorFlow Keras Sequential model that maps states to Q values.
+            一个将状态映射到 Q 值的 TensorFlow Keras Sequential 模型。
         fps (int):
-            The number of frames per second. Specifies the frame rate of the output
-            video. The default frame rate is 30 frames per second.  
+            每秒帧数。指定输出视频的帧率。默认帧率为每秒 30 帧。
     """
 
     with imageio.get_writer(filename, fps=fps) as video:

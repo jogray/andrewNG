@@ -1,6 +1,6 @@
 """
 assignment_utils.py
-contains routines used by C2_W3 Assignments 
+包含 C2_W3 作业中使用的例程
 """
 import copy
 import math
@@ -24,15 +24,15 @@ dlblue = '#0096ff'; dlorange = '#FF9300'; dldarkred='#C00000'; dlmagenta='#FF40F
 dlcolors = [dlblue, dlorange, dldarkred, dlmagenta, dlpurple]
 plt.style.use('./deeplearning.mplstyle')
 
-# --- Assignment ----------------------------------------
+# --- 作业 ----------------------------------------
 def gen_data(m, seed=1, scale=0.7):
-    """ generate a data set based on a x^2 with added noise """
+    """ 基于 x^2 生成带噪声的数据集 """
     c = 0
     x_train = np.linspace(0,49,m)
     np.random.seed(seed)
     y_ideal = x_train**2 + c
     y_train = y_ideal + scale * y_ideal*(np.random.sample((m,))-0.5)
-    x_ideal = x_train #for redraw when new data included in X
+    x_ideal = x_train # 当 X 中包含新数据时用于重绘
     return x_train, y_train, x_ideal, y_ideal
 
 def gen_blobs():
@@ -53,7 +53,7 @@ class lin_model:
         self.scaler = StandardScaler()
         
     def fit(self, X_train,y_train):
-        ''' just fits the data. mapping and scaling are not repeated '''
+        ''' 仅拟合数据，不重复进行映射和缩放 '''
         X_train_mapped = self.poly.fit_transform(X_train.reshape(-1,1))
         X_train_mapped_scaled = self.scaler.fit_transform(X_train_mapped)
         self.linear_model.fit(X_train_mapped_scaled, y_train )
@@ -65,7 +65,7 @@ class lin_model:
         return(yhat)
     
     def mse(self, y, yhat):
-        err = mean_squared_error(y,yhat)/2   #sklean doesn't have div by 2
+        err = mean_squared_error(y,yhat)/2   # sklearn 没有除以 2
         return (err)
      
 def plt_train_test(X_train, y_train, X_test, y_test, x, y_pred, x_ideal, y_ideal, degree):
@@ -74,16 +74,16 @@ def plt_train_test(X_train, y_train, X_test, y_test, x, y_pred, x_ideal, y_ideal
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-    ax.set_title("Poor Performance on Test Data",fontsize = 12)
+    ax.set_title("测试数据上表现不佳",fontsize = 12)
     ax.set_xlabel("x")
     ax.set_ylabel("y")
 
-    ax.scatter(X_train, y_train, color = "red",           label="train")
-    ax.scatter(X_test, y_test,       color = dlc["dlblue"], label="test")
+    ax.scatter(X_train, y_train, color = "red",           label="训练集")
+    ax.scatter(X_test, y_test,       color = dlc["dlblue"], label="测试集")
     ax.set_xlim(ax.get_xlim())
     ax.set_ylim(ax.get_ylim())
-    ax.plot(x, y_pred,  lw=0.5, label=f"predicted, degree={degree}")
-    ax.plot(x_ideal, y_ideal, "--", color = "orangered", label="y_ideal", lw=1)
+    ax.plot(x, y_pred,  lw=0.5, label=f"预测值, 阶数={degree}")
+    ax.plot(x_ideal, y_ideal, "--", color = "orangered", label="y_理想值", lw=1)
     ax.legend(loc='upper left')
     plt.tight_layout()
     plt.show()
@@ -94,33 +94,33 @@ def plt_optimal_degree(X_train, y_train, X_cv, y_cv, x, y_pred, x_ideal, y_ideal
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-    ax[0].set_title("predictions vs data",fontsize = 12)
+    ax[0].set_title("预测值 vs 数据",fontsize = 12)
     ax[0].set_xlabel("x")
     ax[0].set_ylabel("y")
 
-    ax[0].plot(x_ideal, y_ideal, "--", color = "orangered", label="y_ideal", lw=1)
-    ax[0].scatter(X_train, y_train, color = "red",           label="train")
-    ax[0].scatter(X_cv, y_cv,       color = dlc["dlorange"], label="cv")
+    ax[0].plot(x_ideal, y_ideal, "--", color = "orangered", label="y_理想值", lw=1)
+    ax[0].scatter(X_train, y_train, color = "red",           label="训练集")
+    ax[0].scatter(X_cv, y_cv,       color = dlc["dlorange"], label="交叉验证集")
     ax[0].set_xlim(ax[0].get_xlim())
     ax[0].set_ylim(ax[0].get_ylim())
     for i in range(0,max_degree):
         ax[0].plot(x, y_pred[:,i],  lw=0.5, label=f"{i+1}")
     ax[0].legend(loc='upper left')
 
-    ax[1].set_title("error vs degree",fontsize = 12)
+    ax[1].set_title("误差 vs 阶数",fontsize = 12)
     cpts = list(range(1, max_degree+1))
-    ax[1].plot(cpts, err_train[0:], marker='o',label="train error", lw=2,  color = dlc["dlblue"])
-    ax[1].plot(cpts, err_cv[0:],    marker='o',label="cv error",  lw=2, color = dlc["dlorange"])
+    ax[1].plot(cpts, err_train[0:], marker='o',label="训练误差", lw=2,  color = dlc["dlblue"])
+    ax[1].plot(cpts, err_cv[0:],    marker='o',label="交叉验证误差",  lw=2, color = dlc["dlorange"])
     ax[1].set_ylim(*ax[1].get_ylim())
     ax[1].axvline(optimal_degree, lw=1, color = dlc["dlmagenta"])
-    ax[1].annotate("optimal degree", xy=(optimal_degree,80000),xycoords='data',
+    ax[1].annotate("最优阶数", xy=(optimal_degree,80000),xycoords='data',
                 xytext=(0.3, 0.8), textcoords='axes fraction', fontsize=10,
                    arrowprops=dict(arrowstyle="->", connectionstyle="arc3", 
                                    color=dlc['dldarkred'], lw=1))
     ax[1].set_xlabel("degree")
-    ax[1].set_ylabel("error")
+    ax[1].set_ylabel("误差")
     ax[1].legend()
-    fig.suptitle("Find Optimal Degree",fontsize = 12)
+    fig.suptitle("寻找最优阶数",fontsize = 12)
     plt.tight_layout()
 
     plt.show()
@@ -131,12 +131,12 @@ def plt_tune_regularization(X_train, y_train, X_cv, y_cv, x, y_pred, err_train, 
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-    ax[0].set_title("predictions vs data",fontsize = 12)
+    ax[0].set_title("预测值 vs 数据",fontsize = 12)
     ax[0].set_xlabel("x")
     ax[0].set_ylabel("y")
 
-    ax[0].scatter(X_train, y_train, color = "red",           label="train")
-    ax[0].scatter(X_cv, y_cv,       color = dlc["dlorange"], label="cv")
+    ax[0].scatter(X_train, y_train, color = "red",           label="训练集")
+    ax[0].scatter(X_cv, y_cv,       color = dlc["dlorange"], label="交叉验证集")
     ax[0].set_xlim(ax[0].get_xlim())
     ax[0].set_ylim(ax[0].get_ylim())
 #   ax[0].plot(x, y_pred[:,:],  lw=0.5, label=[f"$\lambda =${i}" for i in lambda_range])
@@ -144,26 +144,26 @@ def plt_tune_regularization(X_train, y_train, X_cv, y_cv, x, y_pred, err_train, 
         ax[0].plot(x, y_pred[:,i],  lw=0.5, label=f"$\lambda =${lambda_range[i]}")
     ax[0].legend()
 
-    ax[1].set_title("error vs regularization",fontsize = 12)
-    ax[1].plot(lambda_range, err_train[:], label="train error", color = dlc["dlblue"])
-    ax[1].plot(lambda_range, err_cv[:],    label="cv error",    color = dlc["dlorange"])
+    ax[1].set_title("误差 vs 正则化",fontsize = 12)
+    ax[1].plot(lambda_range, err_train[:], label="训练误差", color = dlc["dlblue"])
+    ax[1].plot(lambda_range, err_cv[:],    label="交叉验证误差",    color = dlc["dlorange"])
     ax[1].set_xscale('log')
     ax[1].set_ylim(*ax[1].get_ylim())
     opt_x = lambda_range[optimal_reg_idx]
     ax[1].vlines(opt_x, *ax[1].get_ylim(), color = "black", lw=1)
-    ax[1].annotate("optimal lambda", (opt_x,150000), xytext=(-80,10), textcoords="offset points",
+    ax[1].annotate("最优 lambda", (opt_x,150000), xytext=(-80,10), textcoords="offset points",
                   arrowprops={'arrowstyle':'simple'})
-    ax[1].set_xlabel("regularization (lambda)")
-    ax[1].set_ylabel("error")
-    fig.suptitle("Tuning Regularization",fontsize = 12)
-    ax[1].text(0.05,0.44,"High\nVariance",fontsize=12, ha='left',transform=ax[1].transAxes,color = dlc["dlblue"])
-    ax[1].text(0.95,0.44,"High\nBias",    fontsize=12, ha='right',transform=ax[1].transAxes,color = dlc["dlblue"])
+    ax[1].set_xlabel("正则化 (lambda)")
+    ax[1].set_ylabel("误差")
+    fig.suptitle("调整正则化",fontsize = 12)
+    ax[1].text(0.05,0.44,"高\n方差",fontsize=12, ha='left',transform=ax[1].transAxes,color = dlc["dlblue"])
+    ax[1].text(0.95,0.44,"高\n偏差",    fontsize=12, ha='right',transform=ax[1].transAxes,color = dlc["dlblue"])
     ax[1].legend(loc='upper left')
     plt.tight_layout()
     plt.show()
 
 def tune_m():
-    """ tune the number of examples to reduce overfitting """
+    """ 调整样本数量以减少过拟合 """
     m = 50
     m_range = np.array(m*np.arange(1,16))
     num_steps = m_range.shape[0]
@@ -178,7 +178,7 @@ def tune_m():
         X_train, X_, y_train, y_ = train_test_split(X,y,test_size=0.40, random_state=1)
         X_cv, X_test, y_cv, y_test = train_test_split(X_,y_,test_size=0.50, random_state=1)
 
-        lmodel = lin_model(degree)  # no regularization
+        lmodel = lin_model(degree)  # 无正则化
         lmodel.fit(X_train, y_train)
         yhat = lmodel.predict(X_train)
         err_train[i] = lmodel.mse(y_train, yhat)
@@ -194,12 +194,12 @@ def plt_tune_m(X_train, y_train, X_cv, y_cv, x, y_pred, err_train, err_cv, m_ran
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-    ax[0].set_title("predictions vs data",fontsize = 12)
+    ax[0].set_title("预测值 vs 数据",fontsize = 12)
     ax[0].set_xlabel("x")
     ax[0].set_ylabel("y")
 
-    ax[0].scatter(X_train, y_train, color = "red",           s=3, label="train", alpha=0.4)
-    ax[0].scatter(X_cv, y_cv,       color = dlc["dlorange"], s=3, label="cv",    alpha=0.4)
+    ax[0].scatter(X_train, y_train, color = "red",           s=3, label="训练集", alpha=0.4)
+    ax[0].scatter(X_cv, y_cv,       color = dlc["dlorange"], s=3, label="交叉验证集",    alpha=0.4)
     ax[0].set_xlim(ax[0].get_xlim())
     ax[0].set_ylim(ax[0].get_ylim())
     for i in range(0,len(m_range),3):
@@ -207,24 +207,24 @@ def plt_tune_m(X_train, y_train, X_cv, y_cv, x, y_pred, err_train, err_cv, m_ran
     ax[0].legend(loc='upper left')
     ax[0].text(0.05,0.5,f"degree = {degree}", fontsize=10, ha='left',transform=ax[0].transAxes,color = dlc["dlblue"])
 
-    ax[1].set_title("error vs number of examples",fontsize = 12)
-    ax[1].plot(m_range, err_train[:], label="train error", color = dlc["dlblue"])
-    ax[1].plot(m_range, err_cv[:],    label="cv error",    color = dlc["dlorange"])
-    ax[1].set_xlabel("Number of Examples (m)")
-    ax[1].set_ylabel("error")
-    fig.suptitle("Tuning number of examples",fontsize = 12)
-    ax[1].text(0.05,0.5,"High\nVariance",        fontsize=12, ha='left',transform=ax[1].transAxes,color = dlc["dlblue"])
-    ax[1].text(0.95,0.5,"Good \nGeneralization", fontsize=12, ha='right',transform=ax[1].transAxes,color = dlc["dlblue"])
+    ax[1].set_title("误差 vs 样本数量",fontsize = 12)
+    ax[1].plot(m_range, err_train[:], label="训练误差", color = dlc["dlblue"])
+    ax[1].plot(m_range, err_cv[:],    label="交叉验证误差",    color = dlc["dlorange"])
+    ax[1].set_xlabel("样本数量 (m)")
+    ax[1].set_ylabel("误差")
+    fig.suptitle("调整样本数量",fontsize = 12)
+    ax[1].text(0.05,0.5,"高\n方差",        fontsize=12, ha='left',transform=ax[1].transAxes,color = dlc["dlblue"])
+    ax[1].text(0.95,0.5,"良好的\n泛化能力", fontsize=12, ha='right',transform=ax[1].transAxes,color = dlc["dlblue"])
     ax[1].legend()
     plt.tight_layout()
     plt.show()  
     
-# cm.Paired has 12 colors, alternating light and dark.
+# cm.Paired 有 12 种颜色，交替亮色和暗色。
 #https://matplotlib.org/stable/tutorials/colors/colormaps.html
-dkcolors = plt.cm.Paired((1,3,7,9,5,11))  # pick paired colors
+dkcolors = plt.cm.Paired((1,3,7,9,5,11))  # 选择配对颜色
 ltcolors = plt.cm.Paired((0,2,6,8,4,10))
-dkcolors_map = mpl.colors.ListedColormap(dkcolors) # turn colors into a color map
-ltcolors_map = mpl.colors.ListedColormap(ltcolors) # These have 6 entries - see lt_colors_map.colors
+dkcolors_map = mpl.colors.ListedColormap(dkcolors) # 将颜色转换为颜色映射
+ltcolors_map = mpl.colors.ListedColormap(ltcolors) # 这些有 6 个条目 - 见 lt_colors_map.colors
 
 def plt_mc_data(ax, X, y, classes,  class_labels=None, map=plt.cm.Paired, legend=False, size=50, m='o'):
     normy = mpl.colors.Normalize(vmin=0, vmax=classes)
@@ -238,11 +238,11 @@ def plt_mc_data(ax, X, y, classes,  class_labels=None, map=plt.cm.Paired, legend
     ax.axis('equal')
 
 
-#Plot a multi-class categorical decision boundary
-# This version handles a non-vector prediction (adds a for-loop over points)
+# 绘制多类分类决策边界
+# 此版本处理非向量预测（添加了对点的 for 循环）
 def plot_cat_decision_boundary(ax, X,predict , class_labels=None, legend=False, vector=True, color='g', lw = 1):
 
-    # create a mesh to points to plot
+    # 创建用于绘图的网格点
     pad = 0.5
     x_min, x_max = X[:, 0].min() - pad, X[:, 0].max() + pad
     y_min, y_max = X[:, 1].min() - pad, X[:, 1].max() + pad
@@ -251,7 +251,7 @@ def plot_cat_decision_boundary(ax, X,predict , class_labels=None, legend=False, 
                          np.arange(y_min, y_max, h))
     points = np.c_[xx.ravel(), yy.ravel()]
     #print("points", points.shape)
-    #make predictions for each point in mesh
+    # 对网格中的每个点进行预测
     if vector:
         Z = predict(points)
     else:
@@ -260,12 +260,12 @@ def plot_cat_decision_boundary(ax, X,predict , class_labels=None, legend=False, 
             Z[i] = predict(points[i].reshape(1,2))
     Z = Z.reshape(xx.shape)
 
-    #contour plot highlights boundaries between values - classes in this case
+    # 等高线图突出显示值之间的边界 - 在本例中为类别边界
     ax.contour(xx, yy, Z, colors=color, linewidths=lw) 
     ax.axis('tight')
 
 def recat(pt, origins):
-    """ categorize a point based on distance from origin of clusters """
+    """ 根据点到聚类原点的距离对点进行分类 """
     nclusters = len(origins)
     min_dist = 10000
     y_new = None
@@ -286,38 +286,38 @@ def plt_train_eq_dist(X_train,y_train,classes, X_cv,   y_cv, centers, std):
     fig.canvas.footer_visible = False
     plt_mc_data(ax[0], X_train,y_train,classes, map=dkcolors_map, legend=True, size=50)
     plt_mc_data(ax[0], X_cv,   y_cv,   classes, map=ltcolors_map, legend=True, m="<")
-    ax[0].set_title("Training, CV Data")
+    ax[0].set_title("训练集、交叉验证集数据")
     for c in css:
         circ = plt.Circle(centers[c], 2*std, color=dkcolors_map(c), clip_on=False, fill=False, lw=0.5)
         ax[0].add_patch(circ)
 
 
-    #make a model for plotting routines to call
+    # 创建一个模型供绘图例程调用
     cat_predict = lambda pt: recat(pt.reshape(1,2), centers)
     plot_cat_decision_boundary(ax[1], X_train, cat_predict,  vector=False, color = dlc["dlmagenta"], lw=0.75)
-    ax[1].set_title("ideal performance", fontsize=14)
+    ax[1].set_title("理想性能", fontsize=14)
 
-    #add the original data to the decison boundary
+    # 将原始数据添加到决策边界
     plt_mc_data(ax[1], X_train,y_train, classes, map=dkcolors_map, legend=True, size=50)
     ax[1].set_xlabel('x0') ; ax[1].set_ylabel("x1");
     plt.show()
     
     
 def plt_nn(model_predict,X_train,y_train, classes, X_cv, y_cv, suptitle=""):
-    #plot the decison boundary.
+    # 绘制决策边界
     fig,ax = plt.subplots(1,2, figsize=(8,4))
     fig.canvas.toolbar_visible = False
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
     plot_cat_decision_boundary(ax[0], X_train, model_predict,  vector=True)
-    ax[0].set_title("training data", fontsize=14)
+    ax[0].set_title("训练数据", fontsize=14)
 
-    #add the original data to the decison boundary
+    # 将原始数据添加到决策边界
     plt_mc_data(ax[0], X_train,y_train, classes, map=dkcolors_map, legend=True, size=75)
     ax[0].set_xlabel('x0') ; ax[0].set_ylabel("x1");
 
     plot_cat_decision_boundary(ax[1], X_train, model_predict,  vector=True)
-    ax[1].set_title("cross-validation data", fontsize=14)
+    ax[1].set_title("交叉验证数据", fontsize=14)
     plt_mc_data(ax[1], X_cv,y_cv, classes, 
                 map=ltcolors_map, legend=True, size=100, m='<')
     ax[1].set_xlabel('x0') ; ax[1].set_ylabel("x1"); 
@@ -327,12 +327,12 @@ def plt_nn(model_predict,X_train,y_train, classes, X_cv, y_cv, suptitle=""):
 
 def eval_cat_err(y, yhat):
     """ 
-    Calculate the categorization error
-    Args:
-      y    : (ndarray  Shape (m,) or (m,1))  target value of each example
-      yhat : (ndarray  Shape (m,) or (m,1))  predicted value of each example
-    Returns:|
-      err: (scalar)             
+    计算分类误差
+    参数:
+      y    : (ndarray  形状 (m,) 或 (m,1))  每个样本的目标值
+      yhat : (ndarray  形状 (m,) 或 (m,1))  每个样本的预测值
+    返回:
+      err: (标量)             
     """
     m = len(y)
     incorrect = 0
@@ -353,20 +353,20 @@ def plot_iterate(lambdas, models, X_train, y_train, X_cv, y_cv):
     fig.canvas.toolbar_visible = False
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
-    ax.set_title("error vs regularization",fontsize = 12)
-    ax.plot(lambdas, err_train, marker='o', label="train error", color = dlc["dlblue"])
-    ax.plot(lambdas, err_cv,    marker='o', label="cv error",    color = dlc["dlorange"])
+    ax.set_title("误差 vs 正则化",fontsize = 12)
+    ax.plot(lambdas, err_train, marker='o', label="训练误差", color = dlc["dlblue"])
+    ax.plot(lambdas, err_cv,    marker='o', label="交叉验证误差",    color = dlc["dlorange"])
     ax.set_xscale('log')
     ax.set_ylim(*ax.get_ylim())
-    ax.set_xlabel("Regularization (lambda)",fontsize = 14)
-    ax.set_ylabel("Error",fontsize = 14)
+    ax.set_xlabel("正则化 (lambda)",fontsize = 14)
+    ax.set_ylabel("误差",fontsize = 14)
     ax.legend()
-    fig.suptitle("Tuning Regularization",fontsize = 14)
-    ax.text(0.05,0.14,"Training Error\nlower than CV",fontsize=12, ha='left',transform=ax.transAxes,color = dlc["dlblue"])
-    ax.text(0.95,0.14,"Similar\nTraining, CV",    fontsize=12, ha='right',transform=ax.transAxes,color = dlc["dlblue"])
+    fig.suptitle("调整正则化",fontsize = 14)
+    ax.text(0.05,0.14,"训练误差\n低于交叉验证误差",fontsize=12, ha='left',transform=ax.transAxes,color = dlc["dlblue"])
+    ax.text(0.95,0.14,"训练误差与\n交叉验证误差相近",    fontsize=12, ha='right',transform=ax.transAxes,color = dlc["dlblue"])
     plt.show()
  
-# not used but will calculate the erro assuming an equal distance
+# 未使用，但将计算假设等距离时的误差
 def err_all_equal(X_train,X_cv,X_test, y_train,y_cv,y_test, centers):
     X_all = np.concatenate((X_train,X_cv,X_test), axis=0)
     y_all = np.concatenate((y_train,y_cv,y_test), axis=0)
@@ -384,22 +384,22 @@ def plt_compare(X,y, classes, simple, regularized, centers):
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
 
-  #plt simple   
+  # 绘制简单模型   
     plot_cat_decision_boundary(ax[0], X, simple,  vector=True)
-    ax[0].set_title("Simple Model", fontsize=14)
+    ax[0].set_title("简单模型", fontsize=14)
     plt_mc_data(ax[0], X,y, classes, map=dkcolors_map, legend=True, size=75)
     ax[0].set_xlabel('x0') ; ax[0].set_ylabel("x1");
 
-  #plt regularized   
+  # 绘制正则化模型   
     plot_cat_decision_boundary(ax[1], X, regularized,  vector=True)
-    ax[1].set_title("Regularized Model", fontsize=14)
+    ax[1].set_title("正则化模型", fontsize=14)
     plt_mc_data(ax[1], X,y, classes, map=dkcolors_map, legend=True, size=75)
     ax[1].set_xlabel('x0') ; ax[0].set_ylabel("x1");
 
-  #plt ideal
+  # 绘制理想模型
     cat_predict = lambda pt: recat(pt.reshape(1,2), centers)
     plot_cat_decision_boundary(ax[2], X, cat_predict,  vector=False)
-    ax[2].set_title("Ideal Model", fontsize=14)
+    ax[2].set_title("理想模型", fontsize=14)
     plt_mc_data(ax[2], X,y, classes, map=dkcolors_map, legend=True, size=75)
     ax[2].set_xlabel('x0') ; ax[0].set_ylabel("x1");
 
@@ -415,4 +415,4 @@ def plt_compare(X,y, classes, simple, regularized, centers):
     ax[2].text(-2.75,3,f"err_test={err_eq:0.2f}", fontsize=11)
     plt.show()
 
-# --- End Assignment ----------------------------------------
+# --- 作业结束 ----------------------------------------
