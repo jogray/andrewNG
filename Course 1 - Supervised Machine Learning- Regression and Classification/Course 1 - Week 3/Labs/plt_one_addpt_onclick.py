@@ -10,7 +10,7 @@ from lab_utils_common import np, plt, dlblue, dlorange, sigmoid, dldarkred, grad
 #display(output)
 
 class plt_one_addpt_onclick:
-    """ class to run one interactive plot """
+    """ 运行单个交互式绘图的类 """
     def __init__(self, x, y, w, b, logistic=True):
         self.logistic=logistic
         pos = y == 1
@@ -22,20 +22,20 @@ class plt_one_addpt_onclick:
         fig.canvas.footer_visible = False
 
         plt.subplots_adjust(bottom=0.25)
-        ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="malignant")
-        ax.scatter(x[neg], y[neg], marker='o', s=100, label="benign", facecolors='none', edgecolors=dlblue,lw=3)
+        ax.scatter(x[pos], y[pos], marker='x', s=80, c = 'red', label="恶性")
+        ax.scatter(x[neg], y[neg], marker='o', s=100, label="良性", facecolors='none', edgecolors=dlblue,lw=3)
         ax.set_ylim(-0.05,1.1)
         xlim = ax.get_xlim()
         ax.set_xlim(xlim[0],xlim[1]*2)
         ax.set_ylabel('y')
-        ax.set_xlabel('Tumor Size')
+        ax.set_xlabel('肿瘤大小')
         self.alegend = ax.legend(loc='lower right')
         if self.logistic:
-            ax.set_title("Example of Logistic Regression on Categorical Data")
+            ax.set_title("分类数据上的逻辑回归示例")
         else:
-            ax.set_title("Example of Linear Regression on Categorical Data")
+            ax.set_title("分类数据上的线性回归示例")
 
-        ax.text(0.65,0.8,"[Click to add data points]", size=10, transform=ax.transAxes)
+        ax.text(0.65,0.8,"[点击添加数据点]", size=10, transform=ax.transAxes)
 
         axcalc   = plt.axes([0.1, 0.05, 0.38, 0.075])  #l,b,w,h
         axthresh = plt.axes([0.5, 0.05, 0.38, 0.075])  #l,b,w,h
@@ -56,12 +56,12 @@ class plt_one_addpt_onclick:
 
         self.cid = fig.canvas.mpl_connect('button_press_event', self.add_data)
         if self.logistic:
-            self.bcalc = Button(axcalc, 'Run Logistic Regression (click)', color=dlblue)
+            self.bcalc = Button(axcalc, '运行逻辑回归（点击）', color=dlblue)
             self.bcalc.on_clicked(self.calc_logistic)
         else:
-            self.bcalc = Button(axcalc, 'Run Linear Regression (click)', color=dlblue)
+            self.bcalc = Button(axcalc, '运行线性回归（点击）', color=dlblue)
             self.bcalc.on_clicked(self.calc_linear)
-        self.bthresh = CheckButtons(axthresh, ('Toggle 0.5 threshold (after regression)',))
+        self.bthresh = CheckButtons(axthresh, ('切换0.5阈值（回归后）',))
         self.bthresh.on_clicked(self.thresh)
         self.resize_sq(self.bthresh)
 
@@ -142,7 +142,7 @@ class plt_one_addpt_onclick:
         xlim = self.ax[0].get_xlim()
         a = self.ax[0].fill_between([xlim[0], xp5], [ylim[1], ylim[1]], alpha=0.2, color=dlblue)
         b = self.ax[0].fill_between([xp5, xlim[1]], [ylim[1], ylim[1]], alpha=0.2, color=dldarkred)
-        c = self.ax[0].annotate("Malignant", xy= [xp5,0.5], xycoords='data',
+        c = self.ax[0].annotate("恶性", xy= [xp5,0.5], xycoords='data',
              xytext=[30,5],textcoords='offset points')
         d = FancyArrowPatch(
             posA=(xp5, 0.5), posB=(xp5+1.5, 0.5), color=dldarkred,
@@ -150,7 +150,7 @@ class plt_one_addpt_onclick:
         )
         self.ax[0].add_artist(d)
 
-        e = self.ax[0].annotate("Benign", xy= [xp5,0.5], xycoords='data',
+        e = self.ax[0].annotate("良性", xy= [xp5,0.5], xycoords='data',
                      xytext=[-70,5],textcoords='offset points', ha='left')
         f = FancyArrowPatch(
             posA=(xp5, 0.5), posB=(xp5-1.5, 0.5), color=dlblue,
@@ -168,14 +168,10 @@ class plt_one_addpt_onclick:
         self.fig.canvas.draw()
 
     def resize_sq(self, bcid):
-        """ resizes the check box """
-        #future reference
-        #print(f"width  : {bcid.rectangles[0].get_width()}")
-        #print(f"height : {bcid.rectangles[0].get_height()}")
-        #print(f"xy     : {bcid.rectangles[0].get_xy()}")
-        #print(f"bb     : {bcid.rectangles[0].get_bbox()}")
-        #print(f"points : {bcid.rectangles[0].get_bbox().get_points()}")  #[[xmin,ymin],[xmax,ymax]]
-
+        """ 调整复选框大小 """
+        # matplotlib >= 3.8 移除了 rectangles/lines 属性，跳过调整
+        if not hasattr(bcid, 'rectangles'):
+            return
         h = bcid.rectangles[0].get_height()
         bcid.rectangles[0].set_height(3*h)
 

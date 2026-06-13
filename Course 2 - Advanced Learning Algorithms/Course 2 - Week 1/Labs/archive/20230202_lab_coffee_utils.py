@@ -8,14 +8,14 @@ import matplotlib.colors as colors
 from lab_utils_common import dlc
 
 def load_coffee_data():
-    """ Creates a coffee roasting data set.
-        roasting duration: 12-15 minutes is best
-        temperature range: 175-260C is best
+    """ 创建咖啡烘焙数据集。
+        烘焙时长：12-15分钟最佳
+        温度范围：175-260°C最佳
     """
     rng = np.random.default_rng(2)
     X = rng.random(400).reshape(-1,2)
-    X[:,1] = X[:,1] * 4 + 11.5          # 12-15 min is best
-    X[:,0] = X[:,0] * (285-150) + 150  # 350-500 F (175-260 C) is best
+    X[:,1] = X[:,1] * 4 + 11.5          # 12-15分钟最佳
+    X[:,0] = X[:,0] * (285-150) + 150  # 350-500华氏度 (175-260摄氏度) 最佳
     Y = np.zeros(len(X))
     
     i=0
@@ -33,26 +33,26 @@ def plt_roast(X,Y):
     Y = Y.reshape(-1,)
     colormap = np.array(['r', 'b'])
     fig, ax = plt.subplots(1,1,)
-    ax.scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="Good Roast" )
+    ax.scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="烘焙良好" )
     ax.scatter(X[Y==0,0],X[Y==0,1], s=100, marker='o', facecolors='none', 
-               edgecolors=dlc["dldarkblue"],linewidth=1,  label="Bad Roast")
+               edgecolors=dlc["dldarkblue"],linewidth=1,  label="烘焙不良")
     tr = np.linspace(175,260,50)
     ax.plot(tr, (-3/85) * tr + 21, color=dlc["dlpurple"],linewidth=1)
     ax.axhline(y=12,color=dlc["dlpurple"],linewidth=1)
     ax.axvline(x=175,color=dlc["dlpurple"],linewidth=1)
-    ax.set_title(f"Coffee Roasting", size=16)
-    ax.set_xlabel("Temperature \n(Celsius)",size=12)
-    ax.set_ylabel("Duration \n(minutes)",size=12)
+    ax.set_title(f"咖啡烘焙", size=16)
+    ax.set_xlabel("温度 \n(摄氏度)",size=12)
+    ax.set_ylabel("时长 \n(分钟)",size=12)
     ax.legend(loc='upper right')
     plt.show()
 
 def plt_prob(ax,fwb):
-    """ plots a decision boundary but include shading to indicate the probability """
-    #setup useful ranges and common linspaces
+    """ 绘制决策边界，包含阴影以表示概率 """
+    #设置有用的范围和常用线性空间
     x0_space  = np.linspace(150, 285 , 40)
     x1_space  = np.linspace(11.5, 15.5 , 40)
 
-    # get probability for x0,x1 ranges
+    # 获取x0, x1范围的概率
     tmp_x0,tmp_x1 = np.meshgrid(x0_space,x1_space)
     z = np.zeros_like(tmp_x0)
     for i in range(tmp_x0.shape[0]):
@@ -69,7 +69,7 @@ def plt_prob(ax,fwb):
     ax.figure.colorbar(pcm, ax=ax)
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-    """ truncates color map """
+    """ 截断颜色映射 """
     new_cmap = colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
@@ -81,49 +81,49 @@ def plt_layer(X,Y,W1,b1,norm_l):
     for i in range(W1.shape[1]):
         layerf= lambda x : sigmoid(np.dot(norm_l(x),W1[:,i]) + b1[i])
         plt_prob(ax[i], layerf)
-        ax[i].scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="Good Roast" )
+        ax[i].scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="烘焙良好" )
         ax[i].scatter(X[Y==0,0],X[Y==0,1], s=100, marker='o', facecolors='none', 
-                   edgecolors=dlc["dldarkblue"],linewidth=1,  label="Bad Roast")
+                   edgecolors=dlc["dldarkblue"],linewidth=1,  label="烘焙不良")
         tr = np.linspace(175,260,50)
         ax[i].plot(tr, (-3/85) * tr + 21, color=dlc["dlpurple"],linewidth=2)
         ax[i].axhline(y= 12, color=dlc["dlpurple"], linewidth=2)
         ax[i].axvline(x=175, color=dlc["dlpurple"], linewidth=2)
-        ax[i].set_title(f"Layer 1, unit {i}")
-        ax[i].set_xlabel("Temperature \n(Celsius)",size=12)
-    ax[0].set_ylabel("Duration \n(minutes)",size=12)
+        ax[i].set_title(f"第1层, 单元 {i}")
+        ax[i].set_xlabel("温度 \n(摄氏度)",size=12)
+    ax[0].set_ylabel("时长 \n(分钟)",size=12)
     plt.show()
         
 def plt_network(X,Y,netf):
     fig, ax = plt.subplots(1,2,figsize=(16,4))
     Y = Y.reshape(-1,)
     plt_prob(ax[0], netf)
-    ax[0].scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="Good Roast" )
+    ax[0].scatter(X[Y==1,0],X[Y==1,1], s=70, marker='x', c='red', label="烘焙良好" )
     ax[0].scatter(X[Y==0,0],X[Y==0,1], s=100, marker='o', facecolors='none', 
-                   edgecolors=dlc["dldarkblue"],linewidth=1,  label="Bad Roast")
+                   edgecolors=dlc["dldarkblue"],linewidth=1,  label="烘焙不良")
     ax[0].plot(X[:,0], (-3/85) * X[:,0] + 21, color=dlc["dlpurple"],linewidth=1)
     ax[0].axhline(y= 12, color=dlc["dlpurple"], linewidth=1)
     ax[0].axvline(x=175, color=dlc["dlpurple"], linewidth=1)
-    ax[0].set_xlabel("Temperature \n(Celsius)",size=12)
-    ax[0].set_ylabel("Duration \n(minutes)",size=12)
+    ax[0].set_xlabel("温度 \n(摄氏度)",size=12)
+    ax[0].set_ylabel("时长 \n(分钟)",size=12)
     ax[0].legend(loc='upper right')
-    ax[0].set_title(f"network probability")
+    ax[0].set_title(f"网络概率")
 
     ax[1].plot(X[:,0], (-3/85) * X[:,0] + 21, color=dlc["dlpurple"],linewidth=1)
     ax[1].axhline(y= 12, color=dlc["dlpurple"], linewidth=1)
     ax[1].axvline(x=175, color=dlc["dlpurple"], linewidth=1)
     fwb = netf(X)
     yhat = (fwb > 0.5).astype(int)
-    ax[1].scatter(X[yhat[:,0]==1,0],X[yhat[:,0]==1,1], s=70, marker='x', c='orange', label="Predicted Good Roast" )
+    ax[1].scatter(X[yhat[:,0]==1,0],X[yhat[:,0]==1,1], s=70, marker='x', c='orange', label="预测烘焙良好" )
     ax[1].scatter(X[yhat[:,0]==0,0],X[yhat[:,0]==0,1], s=100, marker='o', facecolors='none', 
-                   edgecolors=dlc["dldarkblue"],linewidth=1,  label="Bad Roast")
-    ax[1].set_title(f"network decision")
-    ax[1].set_xlabel("Temperature \n(Celsius)",size=12)
-    ax[1].set_ylabel("Duration \n(minutes)",size=12)
+                   edgecolors=dlc["dldarkblue"],linewidth=1,  label="烘焙不良")
+    ax[1].set_title(f"网络决策")
+    ax[1].set_xlabel("温度 \n(摄氏度)",size=12)
+    ax[1].set_ylabel("时长 \n(分钟)",size=12)
     ax[1].legend(loc='upper right')
 
 
 def plt_output_unit(W,b):
-    """ plots a single unit function with 3 inputs """
+    """ 绘制具有3个输入的单个单元函数 """
     steps = 10
     fig = plt.figure()
     ax = fig.add_subplot(projection='3d')
@@ -139,11 +139,11 @@ def plt_output_unit(W,b):
                 v = np.array([x[i,j,k],y[i,j,k],z[i,j,k]])
                 d[i,j,k] = tf.keras.activations.sigmoid(np.dot(v,W[:,0])+b).numpy()
     pcm = ax.scatter(x, y, z, c=d, cmap=cmap, alpha = 1 )
-    ax.set_xlabel("unit 0"); 
-    ax.set_ylabel("unit 1"); 
-    ax.set_zlabel("unit 2"); 
+    ax.set_xlabel("单元 0"); 
+    ax.set_ylabel("单元 1"); 
+    ax.set_zlabel("单元 2"); 
     ax.view_init(30, -120)
     ax.figure.colorbar(pcm, ax=ax)
-    ax.set_title(f"Layer 2, output unit")
+    ax.set_title(f"第2层, 输出单元")
 
     plt.show()

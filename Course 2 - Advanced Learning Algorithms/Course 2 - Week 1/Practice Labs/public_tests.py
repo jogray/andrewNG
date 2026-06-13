@@ -1,4 +1,4 @@
-# UNIT TESTS
+# 单元测试
 from tensorflow.keras.activations import sigmoid as tf_keras_sigmoid
 from tensorflow.keras.layers import Dense
 
@@ -6,9 +6,14 @@ import numpy as np
 
 def test_c1(target):
     assert len(target.layers) == 3, \
-        f"Wrong number of layers. Expected 3 but got {len(target.layers)}"
-    assert target.input.shape.as_list() == [None, 400], \
-        f"Wrong input shape. Expected [None,  400] but got {target.input.shape.as_list()}"
+        f"层数错误。期望3但得到 {len(target.layers)}"
+    # 兼容 Keras 2 (target.input.shape.as_list()) 和 Keras 3 (target.input_shape)
+    try:
+        input_shape = target.input.shape.as_list()
+    except AttributeError:
+        input_shape = list(target.input_shape)
+    assert input_shape == [None, 400], \
+        f"输入形状错误。期望 [None,  400] 但得到 {input_shape}"
     i = 0
     expected = [[Dense, [None, 25], tf_keras_sigmoid],
                 [Dense, [None, 15], tf_keras_sigmoid],
@@ -16,14 +21,19 @@ def test_c1(target):
 
     for layer in target.layers:
         assert type(layer) == expected[i][0], \
-            f"Wrong type in layer {i}. Expected {expected[i][0]} but got {type(layer)}"
-        assert layer.output.shape.as_list() == expected[i][1], \
-            f"Wrong number of units in layer {i}. Expected {expected[i][1]} but got {layer.output.shape.as_list()}"
+            f"第{i}层类型错误。期望 {expected[i][0]} 但得到 {type(layer)}"
+        # 兼容 Keras 2 (.shape.as_list()) 和 Keras 3 (.shape 是 tuple)
+        try:
+            output_shape = layer.output.shape.as_list()
+        except AttributeError:
+            output_shape = list(layer.output.shape)
+        assert output_shape == expected[i][1], \
+            f"第{i}层单元数错误。期望 {expected[i][1]} 但得到 {output_shape}"
         assert layer.activation == expected[i][2], \
-            f"Wrong activation in layer {i}. Expected {expected[i][2]} but got {layer.activation}"
+            f"第{i}层激活函数错误。期望 {expected[i][2]} 但得到 {layer.activation}"
         i = i + 1
 
-    print("\033[92mAll tests passed!")
+    print("\033[92m所有测试通过!")
     
 def test_c2(target):
     
@@ -40,19 +50,19 @@ def test_c2(target):
     A_tst = target(x_tst, W_tst, b_tst, linear)
     assert A_tst.shape[0] == len(b_tst)
     assert np.allclose(A_tst, [10., 20.]), \
-        "Wrong output. Check the dot product"
+        "输出错误。检查点积"
     
     b_tst = np.array([3., 5.])  # (2 features)
     
     A_tst = target(x_tst, W_tst, b_tst, linear)
     assert np.allclose(A_tst, [13., 25.]), \
-        "Wrong output. Check the bias term in the formula"
+        "输出错误。检查公式中的偏置项"
     
     A_tst = target(x_tst, W_tst, b_tst, linear_times3)
     assert np.allclose(A_tst, [39., 75.]), \
-        "Wrong output. Did you apply the activation function at the end?"
+        "输出错误。你是否在最后应用了激活函数？"
     
-    print("\033[92mAll tests passed!")  
+    print("\033[92m所有测试通过!")
     
 def test_c3(target):
     
@@ -69,17 +79,17 @@ def test_c3(target):
     A_tst = target(x_tst, W_tst, b_tst, linear)
     assert A_tst.shape[0] == len(b_tst)
     assert np.allclose(A_tst, [10., 20.]), \
-        "Wrong output. Check the dot product"
+        "输出错误。检查点积"
     
     b_tst = np.array([3., 5.])  # (2 features)
     
     A_tst = target(x_tst, W_tst, b_tst, linear)
     assert np.allclose(A_tst, [13., 25.]), \
-        "Wrong output. Check the bias term in the formula"
+        "输出错误。检查公式中的偏置项"
     
     A_tst = target(x_tst, W_tst, b_tst, linear_times3)
     assert np.allclose(A_tst, [39., 75.]), \
-        "Wrong output. Did you apply the activation function at the end?"
+        "输出错误。你是否在最后应用了激活函数？"
     
     x_tst = np.array([[1., 2., 3., 4.], [5., 6., 7., 8.]])  # (2 examples, 4 features)
     W_tst = np.array([[1., 2., 3.], [4., 5., 6.], [7., 8., 9.], [10., 11., 12]]) # (3 input features, 2 output features)
@@ -88,16 +98,16 @@ def test_c3(target):
     A_tst = target(x_tst, W_tst, b_tst, linear)
     assert A_tst.shape == (2, 3)
     assert np.allclose(A_tst, [[ 70.,  80.,  90.], [158., 184., 210.]]), \
-        "Wrong output. Check the dot product"
+        "输出错误。检查点积"
     
     b_tst = np.array([3., 5., 6])  # (3 features)
     
     A_tst = target(x_tst, W_tst, b_tst, linear)
     assert np.allclose(A_tst, [[ 73.,  85.,  96.], [161., 189., 216.]]), \
-        "Wrong output. Check the bias term in the formula"
+        "输出错误。检查公式中的偏置项"
     
     A_tst = target(x_tst, W_tst, b_tst, linear_times3)
     assert np.allclose(A_tst, [[ 219.,  255.,  288.], [483., 567., 648.]]), \
-        "Wrong output. Did you apply the activation function at the end?"
+        "输出错误。你是否在最后应用了激活函数？"
     
-    print("\033[92mAll tests passed!")  
+    print("\033[92m所有测试通过!")  

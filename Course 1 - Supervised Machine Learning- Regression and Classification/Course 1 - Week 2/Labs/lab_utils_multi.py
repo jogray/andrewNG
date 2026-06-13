@@ -15,34 +15,34 @@ def load_data_multi():
     return X, y
 
 ##########################################################
-# Plotting Routines
+# 绘图例程
 ##########################################################
 
 def plt_house_x(X, y,f_wb=None, ax=None):
-    ''' plot house with aXis '''
+    ''' 带坐标轴绘制房屋 '''
     if not ax:
         fig, ax = plt.subplots(1,1)
-    ax.scatter(X, y, marker='x', c='r', label="Actual Value")
+    ax.scatter(X, y, marker='x', c='r', label="实际值")
 
-    ax.set_title("Housing Prices")
-    ax.set_ylabel('Price (in 1000s of dollars)')
-    ax.set_xlabel(f'Size (1000 sqft)')
+    ax.set_title("房价")
+    ax.set_ylabel('价格（千美元）')
+    ax.set_xlabel(f'面积（千平方英尺）')
     if f_wb is not None:
-        ax.plot(X, f_wb,  c=dlblue, label="Our Prediction")
+        ax.plot(X, f_wb,  c=dlblue, label="我们的预测")
     ax.legend()
     
 
 def mk_cost_lines(x,y,w,b, ax):
-    ''' makes vertical cost lines'''
-    cstr = "cost = (1/2m)*1000*("
+    ''' 绘制垂直代价线'''
+    cstr = "代价 = (1/2m)*1000*("
     ctot = 0
-    label = 'cost for point'
+    label = '该点的代价'
     for p in zip(x,y):
         f_wb_p = w*p[0]+b
         c_p = ((f_wb_p - p[1])**2)/2
         c_p_txt = c_p/1000
         ax.vlines(p[0], p[1],f_wb_p, lw=3, color=dlpurple, ls='dotted', label=label)
-        label='' #just one
+        label='' #只显示一次
         cxy = [p[0], p[1] + (f_wb_p-p[1])/2]
         ax.annotate(f'{c_p_txt:0.0f}', xy=cxy, xycoords='data',color=dlpurple, 
             xytext=(5, 0), textcoords='offset points')
@@ -79,7 +79,7 @@ def plt_contour_wgrad(x, y, hist, ax, w_range=[-100, 500, 5], b_range=[-500, 500
                    colors=[dlblue, dlorange, dldarkred, dlmagenta, dlpurple]) 
     ax.clabel(CS, inline=1, fmt='%1.0f', fontsize=10)
     ax.set_xlabel("w");  ax.set_ylabel("b")
-    ax.set_title('Contour plot of cost J(w,b), vs b,w with path of gradient descent')
+    ax.set_title('代价J(w,b)的等高线图，vs b,w，含梯度下降路径')
     w = w_final; b=b_final
     ax.hlines(b, ax.get_xlim()[0],w, lw=2, color=dlpurple, ls='dotted')
     ax.vlines(w, ax.get_ylim()[0],b, lw=2, color=dlpurple, ls='dotted')
@@ -96,7 +96,7 @@ def plt_contour_wgrad(x, y, hist, ax, w_range=[-100, 500, 5], b_range=[-500, 500
     return
 
 
-# plots p1 vs p2. Prange is an array of entries [min, max, steps]. In feature scaling lab.
+# 绘制p1 vs p2。Prange是[min, max, steps]的数组。用于特征缩放实验。
 def plt_contour_multi(x, y, w, b, ax, prange, p1, p2, title="", xlabel="", ylabel=""): 
     contours = [1e2, 2e2,3e2,4e2, 5e2, 6e2, 7e2,8e2,1e3, 1.25e3,1.5e3, 1e4, 1e5, 1e6, 1e7]
     px,py = np.meshgrid(np.linspace(*(prange[p1])),np.linspace(*(prange[p2])))
@@ -130,8 +130,8 @@ def plt_equal_scale(X_train, X_norm, y_train):
     w_best = np.array([0.23844318, -25.77326319, -58.11084634,  -1.57727192])
     b_best = 235
     plt_contour_multi(X_train, y_train, w_best, b_best, ax[0], prange, 0, 1, 
-                      title='Unnormalized, J(w,b), vs w[0],w[1]',
-                      xlabel= "w[0] (size(sqft))", ylabel="w[1] (# bedrooms)")
+                      title='未归一化, J(w,b), vs w[0],w[1]',
+                      xlabel= "w[0] (面积(平方英尺))", ylabel="w[1] (卧室数量)")
     #
     w_best = np.array([111.1972, -16.75480051, -28.51530411, -37.17305735])
     b_best = 376.949151515151
@@ -141,9 +141,9 @@ def plt_equal_scale(X_train, X_norm, y_train):
               [-37.1-16,-37.1+16, 50],
               [376-150, 376+150, 50]]
     plt_contour_multi(X_norm, y_train, w_best, b_best, ax[1], prange, 0, 1, 
-                      title='Normalized, J(w,b), vs w[0],w[1]',
-                      xlabel= "w[0] (normalized size(sqft))", ylabel="w[1] (normalized # bedrooms)")
-    fig.suptitle("Cost contour with equal scale", fontsize=18)
+                      title='已归一化, J(w,b), vs w[0],w[1]',
+                      xlabel= "w[0] (归一化面积(平方英尺))", ylabel="w[1] (归一化卧室数量)")
+    fig.suptitle("等比例代价等高线图", fontsize=18)
     #plt.tight_layout(rect=(0,0,1.05,1.05))
     fig.tight_layout(rect=(0,0,1,0.95))
     plt.show()
@@ -161,13 +161,13 @@ def plt_divergence(p_hist, J_hist, x_train,y_train):
     fig = plt.figure(figsize=(12,5))
     plt.subplots_adjust( wspace=0 )
     gs = fig.add_gridspec(1, 5)
-    fig.suptitle(f"Cost escalates when learning rate is too large")
+    fig.suptitle(f"学习率过大时代价上升")
     #===============
-    #  First subplot
+    #  第一个子图
     #===============
     ax = fig.add_subplot(gs[:2], )
 
-    # Print w vs cost to see minimum
+    # 打印w vs 代价以查看最小值
     fix_b = 100
     w_array = np.arange(-70000, 70000, 1000)
     cost = np.zeros_like(w_array)
@@ -178,13 +178,13 @@ def plt_divergence(p_hist, J_hist, x_train,y_train):
 
     ax.plot(w_array, cost)
     ax.plot(x,v, c=dlmagenta)
-    ax.set_title("Cost vs w, b set to 100")
-    ax.set_ylabel('Cost')
+    ax.set_title("代价 vs w, b固定为100")
+    ax.set_ylabel('代价')
     ax.set_xlabel('w')
     ax.xaxis.set_major_locator(MaxNLocator(2)) 
 
     #===============
-    # Second Subplot
+    # 第二个子图
     #===============
 
     tmp_b,tmp_w = np.meshgrid(np.arange(-35000, 35000, 500),np.arange(-70000, 70000, 500))
@@ -200,9 +200,9 @@ def plt_divergence(p_hist, J_hist, x_train,y_train):
 
     ax.set_xlabel('w', fontsize=16)
     ax.set_ylabel('b', fontsize=16)
-    ax.set_zlabel('\ncost', fontsize=16)
-    plt.title('Cost vs (b, w)')
-    # Customize the view angle 
+    ax.set_zlabel('\n代价', fontsize=16)
+    plt.title('代价 vs (b, w)')
+    # 自定义视角 
     ax.view_init(elev=20., azim=-65)
     ax.plot(x, y, v,c=dlmagenta)
     
@@ -224,11 +224,11 @@ def add_line(dj_dx, x1, y1, d, ax):
 
 def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
     #===============
-    #  First subplot
+    #  第一个子图
     #===============
-    fig,ax = plt.subplots(1,2,figsize=(12,4))
+    ax = fig.add_subplot(gs[:2], )
 
-    # Print w vs cost to see minimum
+    # 打印w vs 代价以查看最小值
     fix_b = 100
     w_array = np.linspace(-100, 500, 50)
     w_array = np.linspace(0, 400, 50)
@@ -238,11 +238,11 @@ def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
         tmp_w = w_array[i]
         cost[i] = f_compute_cost(x_train, y_train, tmp_w, fix_b)
     ax[0].plot(w_array, cost,linewidth=1)
-    ax[0].set_title("Cost vs w, with gradient; b set to 100")
-    ax[0].set_ylabel('Cost')
+    ax[0].set_title("代价 vs w, 含梯度; b固定为100")
+    ax[0].set_ylabel('代价')
     ax[0].set_xlabel('w')
 
-    # plot lines for fixed b=100
+    # 为固定b=100绘制线条
     for tmp_w in [100,200,300]:
         fix_b = 100
         dj_dw,dj_db = f_compute_gradient(x_train, y_train, tmp_w, fix_b )
@@ -250,7 +250,7 @@ def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
         add_line(dj_dw, tmp_w, j, 30, ax[0])
 
     #===============
-    # Second Subplot
+    # 第二个子图
     #===============
 
     tmp_b,tmp_w = np.meshgrid(np.linspace(-200, 200, 10), np.linspace(-100, 600, 10))
@@ -264,7 +264,7 @@ def plt_gradients(x_train,y_train, f_compute_cost, f_compute_gradient):
     n=-2
     color_array = np.sqrt(((V-n)/2)**2 + ((U-n)/2)**2)
 
-    ax[1].set_title('Gradient shown in quiver plot')
+    ax[1].set_title('箭头图中显示的梯度')
     Q = ax[1].quiver(X, Y, U, V, color_array, units='width', )
     qk = ax[1].quiverkey(Q, 0.9, 0.9, 2, r'$2 \frac{m}{s}$', labelpos='E',coordinates='figure')
     ax[1].set_xlabel("w"); ax[1].set_ylabel("b")
@@ -291,31 +291,30 @@ def plot_cost_i_w(X,y,hist):
     cst = [compute_cost(X,y,np.array([wr[i],-32, -67, -1.46]), 221) for i in range(len(wr))]
 
     fig,ax = plt.subplots(1,2,figsize=(12,3))
-    ax[0].plot(hist["iter"], (hist["cost"]));  ax[0].set_title("Cost vs Iteration")
-    ax[0].set_xlabel("iteration"); ax[0].set_ylabel("Cost")
-    ax[1].plot(wr, cst); ax[1].set_title("Cost vs w[0]")
-    ax[1].set_xlabel("w[0]"); ax[1].set_ylabel("Cost")
+    ax[0].plot(hist["iter"], (hist["cost"]));  ax[0].set_title("代价 vs 迭代次数")
+    ax[0].set_xlabel("迭代次数"); ax[0].set_ylabel("代价")
+    ax[1].plot(wr, cst); ax[1].set_title("代价 vs w[0]")
+    ax[1].set_xlabel("w[0]"); ax[1].set_ylabel("代价")
     ax[1].plot(ws[:,0],hist["cost"])
     plt.show()
 
  
 ##########################################################
-# Regression Routines
+# 回归例程
 ##########################################################
 
 def compute_gradient_matrix(X, y, w, b): 
     """
-    Computes the gradient for linear regression 
+    计算线性回归的梯度
  
-    Args:
-      X : (array_like Shape (m,n)) variable such as house size 
-      y : (array_like Shape (m,1)) actual value 
-      w : (array_like Shape (n,1)) Values of parameters of the model      
-      b : (scalar )                Values of parameter of the model      
-    Returns
-      dj_dw: (array_like Shape (n,1)) The gradient of the cost w.r.t. the parameters w. 
-      dj_db: (scalar)                The gradient of the cost w.r.t. the parameter b. 
-                                  
+    参数:
+      X : (array_like Shape (m,n)) 变量，如房屋大小
+      y : (array_like Shape (m,1)) 实际值
+      w : (array_like Shape (n,1)) 模型参数的值
+      b : (scalar)                 模型参数的值
+    返回
+      dj_dw: (array_like Shape (n,1)) 代价相对于参数w的梯度。
+      dj_db: (scalar)                 代价相对于参数b的梯度。
     """
     m,n = X.shape
     f_wb = X @ w + b              
@@ -325,24 +324,24 @@ def compute_gradient_matrix(X, y, w, b):
         
     return dj_db,dj_dw
 
-#Function to calculate the cost
+#计算代价的函数
 def compute_cost_matrix(X, y, w, b, verbose=False):
     """
-    Computes the gradient for linear regression 
-     Args:
-      X : (array_like Shape (m,n)) variable such as house size 
-      y : (array_like Shape (m,)) actual value 
-      w : (array_like Shape (n,)) parameters of the model 
-      b : (scalar               ) parameter of the model 
-      verbose : (Boolean) If true, print out intermediate value f_wb
-    Returns
+    计算线性回归的梯度
+     参数:
+      X : (array_like Shape (m,n)) 变量，如房屋大小
+      y : (array_like Shape (m,)) 实际值
+      w : (array_like Shape (n,)) 模型参数
+      b : (scalar)                模型参数
+      verbose : (Boolean) 如果为True，打印中间值f_wb
+    返回
       cost: (scalar)                      
     """ 
     m,n = X.shape
 
-    # calculate f_wb for all examples.
+    # 计算所有样本的f_wb。
     f_wb = X @ w + b  
-    # calculate cost
+    # 计算代价
     total_cost = (1/(2*m)) * np.sum((f_wb-y)**2)
 
     if verbose: print("f_wb:")
@@ -350,16 +349,16 @@ def compute_cost_matrix(X, y, w, b, verbose=False):
         
     return total_cost
 
-# Loop version of multi-variable compute_cost
+# 多变量compute_cost的循环版本
 def compute_cost(X, y, w, b): 
     """
-    compute cost
-    Args:
-      X : (ndarray): Shape (m,n) matrix of examples with multiple features
-      w : (ndarray): Shape (n)   parameters for prediction   
-      b : (scalar):              parameter  for prediction   
-    Returns
-      cost: (scalar)             cost
+    计算代价
+    参数:
+      X : (ndarray): Shape (m,n) 多特征样本矩阵
+      w : (ndarray): Shape (n)   预测参数
+      b : (scalar):              预测参数
+    返回
+      cost: (scalar)             代价
     """
     m = X.shape[0]
     cost = 0.0
@@ -371,17 +370,17 @@ def compute_cost(X, y, w, b):
 
 def compute_gradient(X, y, w, b): 
     """
-    Computes the gradient for linear regression 
-    Args:
-      X : (ndarray Shape (m,n)) matrix of examples 
-      y : (ndarray Shape (m,))  target value of each example
-      w : (ndarray Shape (n,))  parameters of the model      
-      b : (scalar)              parameter of the model      
-    Returns
-      dj_dw : (ndarray Shape (n,)) The gradient of the cost w.r.t. the parameters w. 
-      dj_db : (scalar)             The gradient of the cost w.r.t. the parameter b. 
+    计算线性回归的梯度
+    参数:
+      X : (ndarray Shape (m,n)) 样本矩阵
+      y : (ndarray Shape (m,))  每个样本的目标值
+      w : (ndarray Shape (n,))  模型参数
+      b : (scalar)              模型参数
+    返回
+      dj_dw : (ndarray Shape (n,)) 代价相对于参数w的梯度。
+      dj_db : (scalar)             代价相对于参数b的梯度。
     """
-    m,n = X.shape           #(number of examples, number of features)
+    m,n = X.shape           #(样本数量, 特征数量)
     dj_dw = np.zeros((n,))
     dj_db = 0.
 
@@ -395,80 +394,77 @@ def compute_gradient(X, y, w, b):
         
     return dj_db,dj_dw
 
-#This version saves more values and is more verbose than the assigment versons
+#此版本保存更多值，比作业版本更详细
 def gradient_descent_houses(X, y, w_in, b_in, cost_function, gradient_function, alpha, num_iters): 
     """
-    Performs batch gradient descent to learn theta. Updates theta by taking 
-    num_iters gradient steps with learning rate alpha
+    执行批量梯度下降来学习theta。通过执行
+    num_iters次梯度下降步骤，学习率为alpha来更新theta
     
-    Args:
-      X : (array_like Shape (m,n)    matrix of examples 
-      y : (array_like Shape (m,))    target value of each example
-      w_in : (array_like Shape (n,)) Initial values of parameters of the model
-      b_in : (scalar)                Initial value of parameter of the model
-      cost_function: function to compute cost
-      gradient_function: function to compute the gradient
-      alpha : (float) Learning rate
-      num_iters : (int) number of iterations to run gradient descent
-    Returns
-      w : (array_like Shape (n,)) Updated values of parameters of the model after
-          running gradient descent
-      b : (scalar)                Updated value of parameter of the model after
-          running gradient descent
+    参数:
+      X : (array_like Shape (m,n))    样本矩阵
+      y : (array_like Shape (m,))    每个样本的目标值
+      w_in : (array_like Shape (n,)) 模型参数的初始值
+      b_in : (scalar)                模型参数的初始值
+      cost_function: 计算代价的函数
+      gradient_function: 计算梯度的函数
+      alpha : (float) 学习率
+      num_iters : (int) 运行梯度下降的迭代次数
+    返回
+      w : (array_like Shape (n,)) 运行梯度下降后模型参数的更新值
+      b : (scalar)                运行梯度下降后模型参数的更新值
     """
     
-    # number of training examples
+    # 训练样本数量
     m = len(X)
     
-    # An array to store values at each iteration primarily for graphing later
+    # 一个数组，用于存储每次迭代的值，主要用于后续绘图
     hist={}
     hist["cost"] = []; hist["params"] = []; hist["grads"]=[]; hist["iter"]=[];
     
-    w = copy.deepcopy(w_in)  #avoid modifying global w within function
+    w = copy.deepcopy(w_in)  #避免在函数内部修改全局w
     b = b_in
-    save_interval = np.ceil(num_iters/10000) # prevent resource exhaustion for long runs
+    save_interval = np.ceil(num_iters/10000) # 防止长时间运行时资源耗尽
 
-    print(f"Iteration Cost          w0       w1       w2       w3       b       djdw0    djdw1    djdw2    djdw3    djdb  ")
+    print(f"迭代     代价           w0       w1       w2       w3       b       djdw0    djdw1    djdw2    djdw3    djdb  ")
     print(f"---------------------|--------|--------|--------|--------|--------|--------|--------|--------|--------|--------|")
 
     for i in range(num_iters):
 
-        # Calculate the gradient and update the parameters
+        # 计算梯度并更新参数
         dj_db,dj_dw = gradient_function(X, y, w, b)   
 
-        # Update Parameters using w, b, alpha and gradient
+        # 使用w、b、alpha和梯度更新参数
         w = w - alpha * dj_dw               
         b = b - alpha * dj_db               
       
-        # Save cost J,w,b at each save interval for graphing
+        # 在每个保存间隔保存代价J,w,b，用于绘图
         if i == 0 or i % save_interval == 0:     
             hist["cost"].append(cost_function(X, y, w, b))
             hist["params"].append([w,b])
             hist["grads"].append([dj_dw,dj_db])
             hist["iter"].append(i)
 
-        # Print cost every at intervals 10 times or as many iterations if < 10
+        # 每隔10次或少于10次时打印代价
         if i% math.ceil(num_iters/10) == 0:
-            #print(f"Iteration {i:4d}: Cost {cost_function(X, y, w, b):8.2f}   ")
             cst = cost_function(X, y, w, b)
             print(f"{i:9d} {cst:0.5e} {w[0]: 0.1e} {w[1]: 0.1e} {w[2]: 0.1e} {w[3]: 0.1e} {b: 0.1e} {dj_dw[0]: 0.1e} {dj_dw[1]: 0.1e} {dj_dw[2]: 0.1e} {dj_dw[3]: 0.1e} {dj_db: 0.1e}")
        
-    return w, b, hist #return w,b and history for graphing
+    return w, b, hist #返回w,b和历史记录用于绘图
 
 def run_gradient_descent(X,y,iterations=1000, alpha = 1e-6):
 
     m,n = X.shape
-    # initialize parameters
+    # 初始化参数
     initial_w = np.zeros(n)
     initial_b = 0
-    # run gradient descent
+    # 运行梯度下降
     w_out, b_out, hist_out = gradient_descent_houses(X ,y, initial_w, initial_b,
                                                compute_cost, compute_gradient_matrix, alpha, iterations)
-    print(f"w,b found by gradient descent: w: {w_out}, b: {b_out:0.2f}")
+    print(f"梯度下降找到的w,b: w: {w_out}, b: {b_out:0.2f}")
     
     return(w_out, b_out, hist_out)
 
-# compact extaction of hist data
+# 紧凑提取历史数据
 #x = hist["iter"]
 #J  = np.array([ p    for p in hist["cost"]])
 #ws = np.array([ p[0] for p in hist["params"]])
@@ -478,70 +474,67 @@ def run_gradient_descent(X,y,iterations=1000, alpha = 1e-6):
 
 def run_gradient_descent_feng(X,y,iterations=1000, alpha = 1e-6):
     m,n = X.shape
-    # initialize parameters
+    # 初始化参数
     initial_w = np.zeros(n)
     initial_b = 0
-    # run gradient descent
+    # 运行梯度下降
     w_out, b_out, hist_out = gradient_descent(X ,y, initial_w, initial_b,
                                                compute_cost, compute_gradient_matrix, alpha, iterations)
-    print(f"w,b found by gradient descent: w: {w_out}, b: {b_out:0.4f}")
+    print(f"梯度下降找到的w,b: w: {w_out}, b: {b_out:0.4f}")
     
     return(w_out, b_out)
 
 def gradient_descent(X, y, w_in, b_in, cost_function, gradient_function, alpha, num_iters): 
     """
-    Performs batch gradient descent to learn theta. Updates theta by taking 
-    num_iters gradient steps with learning rate alpha
+    执行批量梯度下降来学习theta。通过执行
+    num_iters次梯度下降步骤，学习率为alpha来更新theta
     
-    Args:
-      X : (array_like Shape (m,n)    matrix of examples 
-      y : (array_like Shape (m,))    target value of each example
-      w_in : (array_like Shape (n,)) Initial values of parameters of the model
-      b_in : (scalar)                Initial value of parameter of the model
-      cost_function: function to compute cost
-      gradient_function: function to compute the gradient
-      alpha : (float) Learning rate
-      num_iters : (int) number of iterations to run gradient descent
-    Returns
-      w : (array_like Shape (n,)) Updated values of parameters of the model after
-          running gradient descent
-      b : (scalar)                Updated value of parameter of the model after
-          running gradient descent
+    参数:
+      X : (array_like Shape (m,n))    样本矩阵
+      y : (array_like Shape (m,))    每个样本的目标值
+      w_in : (array_like Shape (n,)) 模型参数的初始值
+      b_in : (scalar)                模型参数的初始值
+      cost_function: 计算代价的函数
+      gradient_function: 计算梯度的函数
+      alpha : (float) 学习率
+      num_iters : (int) 运行梯度下降的迭代次数
+    返回
+      w : (array_like Shape (n,)) 运行梯度下降后模型参数的更新值
+      b : (scalar)                运行梯度下降后模型参数的更新值
     """
     
-    # number of training examples
+    # 训练样本数量
     m = len(X)
     
-    # An array to store values at each iteration primarily for graphing later
+    # 一个数组，用于存储每次迭代的值，主要用于后续绘图
     hist={}
     hist["cost"] = []; hist["params"] = []; hist["grads"]=[]; hist["iter"]=[];
     
-    w = copy.deepcopy(w_in)  #avoid modifying global w within function
+    w = copy.deepcopy(w_in)  #避免在函数内部修改全局w
     b = b_in
-    save_interval = np.ceil(num_iters/10000) # prevent resource exhaustion for long runs
+    save_interval = np.ceil(num_iters/10000) # 防止长时间运行时资源耗尽
 
     for i in range(num_iters):
 
-        # Calculate the gradient and update the parameters
+        # 计算梯度并更新参数
         dj_db,dj_dw = gradient_function(X, y, w, b)   
 
-        # Update Parameters using w, b, alpha and gradient
+        # 使用w、b、alpha和梯度更新参数
         w = w - alpha * dj_dw               
         b = b - alpha * dj_db               
       
-        # Save cost J,w,b at each save interval for graphing
+        # 在每个保存间隔保存代价J,w,b，用于绘图
         if i == 0 or i % save_interval == 0:     
             hist["cost"].append(cost_function(X, y, w, b))
             hist["params"].append([w,b])
             hist["grads"].append([dj_dw,dj_db])
             hist["iter"].append(i)
 
-        # Print cost every at intervals 10 times or as many iterations if < 10
+        # 每隔10次或少于10次时打印代价
         if i% math.ceil(num_iters/10) == 0:
-            #print(f"Iteration {i:4d}: Cost {cost_function(X, y, w, b):8.2f}   ")
             cst = cost_function(X, y, w, b)
-            print(f"Iteration {i:9d}, Cost: {cst:0.5e}")
-    return w, b, hist #return w,b and history for graphing
+            print(f"迭代 {i:9d}, 代价: {cst:0.5e}")
+    return w, b, hist #返回w,b和历史记录用于绘图
 
 def load_house_data():
     data = np.loadtxt("./data/houses.txt", delimiter=',', skiprows=1)
@@ -551,11 +544,11 @@ def load_house_data():
 
 def zscore_normalize_features(X,rtn_ms=False):
     """
-    returns z-score normalized X by column
-    Args:
+    返回按列z-score归一化的X
+    参数:
       X : (numpy array (m,n)) 
-    Returns
-      X_norm: (numpy array (m,n)) input normalized by column
+    返回
+      X_norm: (numpy array (m,n)) 按列归一化的输入
     """
     mu     = np.mean(X,axis=0)  
     sigma  = np.std(X,axis=0)
