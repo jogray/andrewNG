@@ -148,7 +148,7 @@ def plt_layer_relu(X, Y, W1, b1, classes):
     fig.canvas.footer_visible = False
 
     for i in range(nunits):
-        layerf= lambda x : np.maximum(0,(np.dot(x,W1[:,i]) + b1[i]))
+        layerf= lambda x : np.maximum(0,(np.dot(x,W1[:,i]) + b1[i])).item()
         plt_prob_z(ax[i], layerf)
         plt_mc_data(ax[i], X, Y, classes, map=dkcolors_map,legend=True, size=50, m='o')
         ax[i].set_title(f"第1层 单元 {i}")
@@ -166,7 +166,7 @@ def plt_output_layer_linear(X, Y, W, b, classes, x0_rng=None, x1_rng=None):
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
     for i,axi in enumerate(ax.flat):
-        layerf = lambda x : np.dot(x,W[:,i]) + b[i]
+        layerf = lambda x : (np.dot(x,W[:,i]) + b[i]).item()
         plt_prob_z(axi, layerf, x0_rng=x0_rng, x1_rng=x1_rng)
         plt_mc_data(axi, X, Y, classes, map=dkcolors_map,legend=True, size=50, m='o')
         axi.set_ylabel(r"$a^{[1]}_1$",size=9)
