@@ -39,6 +39,6 @@
     ],
     // "remoteUser": "dev",
     // "containerUser": "dev",
-    "postCreateCommand": "/entrypoint.sh && echo private_set | sh",
+    "postCreateCommand": "/entrypoint.sh && echo ${containerWorkspaceFolder}/private_set | sh",
     "image": "jogit/python:13-cu129"
 }
