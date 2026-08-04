@@ -60,8 +60,8 @@ def model_test(target, classes, input_size):
     
     assert len(target.layers) == 3, \
         f"层数错误。期望 3，但得到 {len(target.layers)}"
-    assert target.input.shape.as_list() == [None, input_size], \
-        f"输入形状错误。期望 [None,  {input_size}]，但得到 {target.input.shape.as_list()}"
+    assert list(target.input_shape) == [None, input_size], \
+        f"输入形状错误。期望 [None,  {input_size}]，但得到 {list(target.input_shape)}"
     i = 0
     expected = [[Dense, [None, 120], relu],
                 [Dense, [None, 40], relu],
@@ -70,8 +70,8 @@ def model_test(target, classes, input_size):
     for layer in target.layers:
         assert type(layer) == expected[i][0], \
             f"第 {i} 层类型错误。期望 {expected[i][0]}，但得到 {type(layer)}"
-        assert layer.output.shape.as_list() == expected[i][1], \
-            f"第 {i} 层单元数错误。期望 {expected[i][1]}，但得到 {layer.output.shape.as_list()}"
+        assert [None, layer.units] == expected[i][1], \
+            f"第 {i} 层单元数错误。期望 {expected[i][1]}，但得到 [None, {layer.units}]"
         assert layer.activation == expected[i][2], \
             f"第 {i} 层激活函数错误。期望 {expected[i][2]}，但得到 {layer.activation}"
         assert layer.kernel_regularizer == None, "不得为任何层指定正则化器"
@@ -91,8 +91,8 @@ def model_s_test(target, classes, input_size):
     
     assert len(target.layers) == 2, \
         f"层数错误。期望 2，但得到 {len(target.layers)}"
-    assert target.input.shape.as_list() == [None, input_size], \
-        f"输入形状错误。期望 [None,  {input_size}]，但得到 {target.input.shape.as_list()}"
+    assert list(target.input_shape) == [None, input_size], \
+        f"输入形状错误。期望 [None,  {input_size}]，但得到 {list(target.input_shape)}"
     i = 0
     expected = [[Dense, [None, 6], relu],
                 [Dense, [None, classes], linear]]
@@ -100,8 +100,8 @@ def model_s_test(target, classes, input_size):
     for layer in target.layers:
         assert type(layer) == expected[i][0], \
             f"第 {i} 层类型错误。期望 {expected[i][0]}，但得到 {type(layer)}"
-        assert layer.output.shape.as_list() == expected[i][1], \
-            f"第 {i} 层单元数错误。期望 {expected[i][1]}，但得到 {layer.output.shape.as_list()}"
+        assert [None, layer.units] == expected[i][1], \
+            f"第 {i} 层单元数错误。期望 {expected[i][1]}，但得到 [None, {layer.units}]"
         assert layer.activation == expected[i][2], \
             f"第 {i} 层激活函数错误。期望 {expected[i][2]}，但得到 {layer.activation}"
         assert layer.kernel_regularizer == None, "不得为任何层指定正则化器"
@@ -121,8 +121,8 @@ def model_r_test(target, classes, input_size):
     print("ddd")
     assert len(target.layers) == 3, \
         f"层数错误。期望 3，但得到 {len(target.layers)}"
-    assert target.input.shape.as_list() == [None, input_size], \
-        f"输入形状错误。期望 [None,  {input_size}]，但得到 {target.input.shape.as_list()}"
+    assert list(target.input_shape) == [None, input_size], \
+        f"输入形状错误。期望 [None,  {input_size}]，但得到 {list(target.input_shape)}"
     i = 0
     expected = [[Dense, [None, 120], relu, (tf.keras.regularizers.l2, 0.1)],
                 [Dense, [None, 40], relu, (tf.keras.regularizers.l2, 0.1)],
@@ -131,8 +131,8 @@ def model_r_test(target, classes, input_size):
     for layer in target.layers:
         assert type(layer) == expected[i][0], \
             f"第 {i} 层类型错误。期望 {expected[i][0]}，但得到 {type(layer)}"
-        assert layer.output.shape.as_list() == expected[i][1], \
-            f"第 {i} 层单元数错误。期望 {expected[i][1]}，但得到 {layer.output.shape.as_list()}"
+        assert [None, layer.units] == expected[i][1], \
+            f"第 {i} 层单元数错误。期望 {expected[i][1]}，但得到 [None, {layer.units}]"
         assert layer.activation == expected[i][2], \
             f"第 {i} 层激活函数错误。期望 {expected[i][2]}，但得到 {layer.activation}"
         if not (expected[i][3] == None):
