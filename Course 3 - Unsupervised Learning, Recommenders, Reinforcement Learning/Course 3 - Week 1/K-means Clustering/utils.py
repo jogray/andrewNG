@@ -41,7 +41,7 @@ def plot_kMeans_RGB(X, centroids, idx, K):
     ax.set_xlabel('R值 - 红色')
     ax.set_ylabel('G值 - 绿色')
     ax.set_zlabel('B值 - 蓝色')
-    ax.w_yaxis.set_pane_color((0., 0., 0., .2))
+    ax.yaxis.pane.set_facecolor((0., 0., 0., .2))
     ax.set_title("原始颜色及其颜色聚类的质心")
     plt.show()
 
