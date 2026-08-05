@@ -1,18 +1,18 @@
-""" Utilities for RecSysNN assigment """
+""" RecSysNN作业的实用工具 """
 from collections import defaultdict
 import csv
 import numpy as np
 from numpy import genfromtxt
-import pickle5 as pickle
+import pickle
 import tabulate
 
 
 def load_data():
-    ''' called to load preprepared data for the lab '''
+    ''' 加载为实验准备好的数据 '''
     item_train = genfromtxt('./data/content_item_train.csv', delimiter=',')
     user_train = genfromtxt('./data/content_user_train.csv', delimiter=',')
     y_train    = genfromtxt('./data/content_y_train.csv', delimiter=',')
-    with open('./data/content_item_train_header.txt', newline='') as f:    #csv reader handles quoted strings better
+    with open('./data/content_item_train_header.txt', newline='') as f:    #csv读取器更好地处理带引号的字符串
         item_features = list(csv.reader(f))[0]
     with open('./data/content_user_train_header.txt', newline='') as f:
         user_features = list(csv.reader(f))[0]
@@ -25,7 +25,7 @@ def load_data():
         reader = csv.reader(csvfile, delimiter=',', quotechar='"')
         for line in reader:
             if count == 0:
-                count += 1  #skip header
+                count += 1  #跳过表头
                 #print(line) print
             else:
                 count += 1
@@ -39,7 +39,7 @@ def load_data():
     return(item_train, user_train, y_train, item_features, user_features, item_vecs, movie_dict, user_to_genre)
 
 def pprint_train(x_train, features, vs, u_s, maxcount=5, user=True):
-    """ Prints user_train or item_train nicely """
+    """ 格式化打印user_train或item_train """
     if user:
         flist = [".0f", ".0f", ".1f",
                  ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f", ".1f"]
@@ -48,7 +48,7 @@ def pprint_train(x_train, features, vs, u_s, maxcount=5, user=True):
                  ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f", ".0f"]
 
     head = features[:vs]
-    if vs < u_s: print("error, vector start {vs} should be greater then user start {u_s}")
+    if vs < u_s: print("错误，向量起始位置 {vs} 应大于用户起始位置 {u_s}")
     for i in range(u_s):
         head[i] = "[" + head[i] + "]"
     genres = features[vs:]
@@ -68,10 +68,10 @@ def pprint_train(x_train, features, vs, u_s, maxcount=5, user=True):
 
 
 def split_str(ifeatures, smax):
-    ''' split the feature name strings to tables fit '''
+    ''' 将特征名称字符串分割以适应表格显示 '''
     ofeatures = []
     for s in ifeatures:
-        if not ' ' in s:  # skip string that already have a space
+        if not ' ' in s:  # 跳过已有空格的字符串
             if len(s) > smax:
                 mid = int(len(s)/2)
                 s = s[:mid] + " " + s[mid:]
@@ -80,8 +80,7 @@ def split_str(ifeatures, smax):
     
 
 def print_pred_movies(y_p, item, movie_dict, maxcount=10):
-    """ print results of prediction of a new user. inputs are expected to be in
-        sorted order, unscaled. """
+    """ 打印对新用户的预测结果。输入期望为已排序、未缩放的格式。 """
     count = 0
     disp = [["y_p", "movie id", "rating ave", "title", "genres"]]
 
@@ -97,35 +96,35 @@ def print_pred_movies(y_p, item, movie_dict, maxcount=10):
     return table
 
 def gen_user_vecs(user_vec, num_items):
-    """ given a user vector return:
-        user predict maxtrix to match the size of item_vecs """
+    """ 给定一个用户向量，返回：
+        与item_vecs大小匹配的用户预测矩阵 """
     user_vecs = np.tile(user_vec, (num_items, 1))
     return user_vecs
 
-# predict on  everything, filter on print/use
+# 对所有内容进行预测，打印/使用时进行过滤
 def predict_uservec(user_vecs, item_vecs, model, u_s, i_s, scaler):
-    """ given a scaled user vector, does the prediction on all movies in scaled print_item_vecs returns
-        an array predictions sorted by predicted rating,
-        arrays of user and item, sorted by predicted rating sorting index
+    """ 给定一个缩放后的用户向量，对所有电影进行预测，返回
+        按预测评分排序的预测数组，
+        以及按预测评分排序索引排序的用户和物品数组
     """
     y_p = model.predict([user_vecs[:, u_s:], item_vecs[:, i_s:]])
     y_pu = scaler.inverse_transform(y_p)
 
     if np.any(y_pu < 0):
-        print("Error, expected all positive predictions")
-    sorted_index = np.argsort(-y_pu, axis=0).reshape(-1).tolist()  #negate to get largest rating first
+        print("错误，期望所有预测值为正")
+    sorted_index = np.argsort(-y_pu, axis=0).reshape(-1).tolist()  #取反以获得最大的评分
     sorted_ypu   = y_pu[sorted_index]
     sorted_items = item_vecs[sorted_index]
     sorted_user  = user_vecs[sorted_index]
     return(sorted_index, sorted_ypu, sorted_items, sorted_user)
                 
 def get_user_vecs(user_id, user_train, item_vecs, user_to_genre):
-    """ given a user_id, return:
-        user train/predict matrix to match the size of item_vecs
-        y vector with ratings for all rated movies and 0 for others of size item_vecs """
+    """ 给定user_id，返回：
+        与item_vecs大小匹配的用户训练/预测矩阵
+        包含所有已评分电影评分和其他电影评分为0的y向量 """
 
     if not user_id in user_to_genre:
-        print("error: unknown user id")
+        print("错误：未知的用户ID")
         return None
     else:
         user_vec_found = False
@@ -135,12 +134,12 @@ def get_user_vecs(user_id, user_train, item_vecs, user_to_genre):
                 user_vec_found = True
                 break
         if not user_vec_found:
-            print("error in get_user_vecs, did not find uid in user_train")
+            print("get_user_vecs出错，在user_train中未找到用户ID")
         num_items = len(item_vecs)
         user_vecs = np.tile(user_vec, (num_items, 1))
 
         y = np.zeros(num_items)
-        for i in range(num_items):  # walk through movies in item_vecs and get the movies, see if user has rated them
+        for i in range(num_items):  # 遍历item_vecs中的电影并获取电影，查看用户是否已评分
             movie_id = item_vecs[i, 0]
             if movie_id in user_to_genre[user_id]['movies']:
                 rating = user_to_genre[user_id]['movies'][movie_id]
@@ -150,22 +149,22 @@ def get_user_vecs(user_id, user_train, item_vecs, user_to_genre):
     return(user_vecs, y)
 
 def get_item_genres(item_gvec, genre_features):
-    ''' takes in the item's genre vector and list of genre names
-    returns the feature names where gvec was 1 '''
+    ''' 接收物品的类型向量和类型名称列表
+    返回gvec为1的特征名称 '''
     offsets = np.nonzero(item_gvec)[0]
     genres = [genre_features[i] for i in offsets]
     return genres
 
 
 def print_existing_user(y_p, y, user, items, ivs, uvs, movie_dict, maxcount=10):
-    """ print results of prediction for a user who was in the database.
-        Inputs are expected to be in sorted order, unscaled.
+    """ 打印对数据库中已有用户的预测结果。
+        输入期望为已排序、未缩放的格式。
     """
     count = 0
     disp = [["y_p", "y", "user", "user genre ave", "movie rating ave", "movie id", "title", "genres"]]
     count = 0
     for i in range(0, y.shape[0]):
-        if y[i, 0] != 0:  # zero means not rated
+        if y[i, 0] != 0:  # 零表示未评分
             if count == maxcount:
                 break
             count += 1

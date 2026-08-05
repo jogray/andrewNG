@@ -32,7 +32,7 @@ def plt_act_trio():
     ax[2].axhline(0, lw=0.3, c="black")
     ax[2].axvline(0, lw=0.3, c="black")
     ax[2].set_title("ReLu")
-    fig.suptitle("Common Activation Functions", fontsize=14)
+    fig.suptitle("常用激活函数", fontsize=14)
     fig.tight_layout(pad=0.2)
     plt.show()
 
@@ -47,7 +47,7 @@ def plt_ex1():
     y[50:100]=0
     fig,ax = plt.subplots(1,1, figsize=(2,2))
     widgvis(fig)
-    ax.set_title("Target")
+    ax.set_title("目标")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.plot(X,y)
@@ -61,7 +61,7 @@ def plt_ex2():
     y[0:49]=0
     fig,ax = plt.subplots(1,1, figsize=(2,2))
     widgvis(fig)
-    ax.set_title("Target")
+    ax.set_title("目标")
     ax.set_xlabel("x")
     ax.set_ylabel("y")
     ax.plot(X,y)
@@ -78,11 +78,11 @@ def gen_data():
 def plt_dual(X,y,yhat):
     fig,ax = plt.subplots(1,2, figsize=(4,2))
     widgvis(fig)
-    ax[0].set_title("Target")
+    ax[0].set_title("目标")
     ax[0].set_xlabel("x")
     ax[0].set_ylabel("y")
     ax[0].plot(X,y)
-    ax[1].set_title("Prediction")
+    ax[1].set_title("预测")
     ax[1].set_xlabel("x")
     ax[1].set_ylabel("y")
     ax[1].plot(X,y)
@@ -93,35 +93,35 @@ def plt_dual(X,y,yhat):
 def plt_act1(X,y,z,a):
     fig,ax = plt.subplots(1,3, figsize=(6,2.5))
     widgvis(fig)
-    ax[0].plot(X,y,label="target")
+    ax[0].plot(X,y,label="目标")
     ax[0].axvline(0, lw=0.3, c="black")
     ax[0].axhline(0, lw=0.3, c="black")
-    ax[0].set_title("y - target")
-    ax[1].plot(X,y, label="target")
+    ax[0].set_title("y - 目标")
+    ax[1].plot(X,y, label="目标")
     ax[1].plot(X,z, c=dlc["dldarkred"],label="z")
     ax[1].axvline(0, lw=0.3, c="black")
     ax[1].axhline(0, lw=0.3, c="black")
     ax[1].set_title(r"$z = w \cdot x+b$")
     ax[1].legend(loc="upper center")
-    ax[2].plot(X,y, label="target")
+    ax[2].plot(X,y, label="目标")
     ax[2].plot(X,a, c=dlc["dldarkred"],label="ReLu(z)")
     ax[2].axhline(0, lw=0.3, c="black")
     ax[2].axvline(0, lw=0.3, c="black")
     ax[2].set_title("max(0,z)")
     ax[2].legend()
-    fig.suptitle("Role of Non-Linear Activation", fontsize=12)
+    fig.suptitle("非线性激活的作用", fontsize=12)
     fig.tight_layout(pad=0.22)
     return(ax)
 
 
 def plt_add_notation(ax):
-    ax[1].annotate(text = "matches\n here", xy =(1.5,1.0), 
+    ax[1].annotate(text = "在此\n匹配", xy =(1.5,1.0), 
                    xytext = (0.1,-1.5), fontsize=9,
                   arrowprops=dict(facecolor=dlc["dlpurple"],width=2, headwidth=8))
-    ax[1].annotate(text = "but not\n here", xy =(5,-2.5), 
+    ax[1].annotate(text = "但在此\n不匹配", xy =(5,-2.5), 
                    xytext = (1,-3), fontsize=9,
                   arrowprops=dict(facecolor=dlc["dlpurple"],width=2, headwidth=8))
-    ax[2].annotate(text = "ReLu\n 'off'", xy =(2.6,0), 
+    ax[2].annotate(text = "ReLu\n关闭", xy =(2.6,0), 
                    xytext = (0.1,0.1), fontsize=9,
                   arrowprops=dict(facecolor=dlc["dlpurple"],width=2, headwidth=8))
 
@@ -145,16 +145,16 @@ def compile_fit(model,X,y):
 def plt_model(X,y,yhat_pre, yhat_post):
     fig,ax = plt.subplots(1,3, figsize=(8,2))
     widgvis(fig)
-    ax[0].set_title("Target")
+    ax[0].set_title("目标")
     ax[0].set_xlabel("x")
     ax[0].set_ylabel("y")
     ax[0].plot(X,y)
-    ax[1].set_title("Prediction, pre-training")
+    ax[1].set_title("训练前预测")
     ax[1].set_xlabel("x")
     ax[1].set_ylabel("y")
     ax[1].plot(X,y)
     ax[1].plot(X,yhat_pre)
-    ax[2].set_title("Prediction, post-training")
+    ax[2].set_title("训练后预测")
     ax[2].set_xlabel("x")
     ax[2].set_ylabel("y")
     ax[2].plot(X,y)
@@ -168,7 +168,7 @@ def display_errors(model,X,y):
     doo = yhat != y[:,0]
     idxs = np.where(yhat != y[:,0])[0]
     if len(idxs) == 0:
-        print("no errors found")
+        print("未发现错误")
     else:
         cnt = min(8, len(idxs))
         fig, ax = plt.subplots(1,cnt, figsize=(5,1.2))
@@ -179,22 +179,22 @@ def display_errors(model,X,y):
             j = idxs[i]
             X_reshaped = X[j].reshape((20,20)).T
 
-            # Display the image
+            # 显示图像
             ax[i].imshow(X_reshaped, cmap='gray')
 
-            # Predict using the Neural Network
+            # 使用神经网络进行预测
             prediction = model.predict(X[j].reshape(1,400))
             prediction_p = tf.nn.softmax(prediction)
             yhat = np.argmax(prediction_p)
 
-            # Display the label above the image
+            # 在图像上方显示标签
             ax[i].set_title(f"{y[j,0]},{yhat}",fontsize=10)
             ax[i].set_axis_off()
             fig.suptitle("Label, yhat", fontsize=12)
     return(len(idxs))
 
 def display_digit(X):
-    """ display a single digit. The input is one digit (400,). """
+    """ 显示单个数字。输入为一个数字(400,)。 """
     fig, ax = plt.subplots(1,1, figsize=(0.5,0.5))
     widgvis(fig)
     X_reshaped = X.reshape((20,20)).T

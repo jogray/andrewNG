@@ -74,14 +74,14 @@ def build_tree_recursive(X, y, node_indices, branch_name, max_depth, current_dep
 
     if current_depth == max_depth:
         formatting = " "*current_depth + "-"*current_depth
-        print(formatting, "%s leaf node with indices" % branch_name, node_indices)
+        print(formatting, "%s 叶节点，索引为" % branch_name, node_indices)
         return
    
 
     best_feature = get_best_split(X, y, node_indices) 
     
     formatting = "-"*current_depth
-    print("%s Depth %d, %s: Split on feature: %d" % (formatting, current_depth, branch_name, best_feature))
+    print("%s 深度 %d, %s: 在特征上分割: %d" % (formatting, current_depth, branch_name, best_feature))
     
 
     left_indices, right_indices = split_dataset(X, node_indices, best_feature)
@@ -132,8 +132,8 @@ def generate_split_viz(node_indices, left_indices, right_indices, feature):
     trans=ax.transData.transform
     trans2=fig.transFigure.inverted().transform
 
-    feature_name = ["Ear Shape", "Face Shape", "Whiskers"][feature]
-    ax_name = ["Splitting on %s" % feature_name , "Left: %s = 1" % feature_name, "Right: %s = 0" % feature_name]
+    feature_name = ["耳朵形状", "脸部形状", "胡须"][feature]
+    ax_name = ["在 %s 上分割" % feature_name , "左: %s = 1" % feature_name, "右: %s = 0" % feature_name]
     for idx, n in enumerate(G):
         xx,yy=trans(pos[n]) # figure coordinates
         xa,ya=trans2((xx,yy)) # axes coordinates
@@ -159,8 +159,8 @@ def generate_tree_viz(root_indices, y, tree):
     
     num_images = [len(root_indices)]
     
-    feature_name = ["Ear Shape", "Face Shape", "Whiskers"]
-    y_name = ["Non Cat","Cat"]
+    feature_name = ["耳朵形状", "脸部形状", "胡须"]
+    y_name = ["非猫","猫"]
     
     decision_names = []
     leaf_names = []
@@ -175,9 +175,9 @@ def generate_tree_viz(root_indices, y, tree):
             num_images.append(len(indices))
             idx += 1
             if i > 0:
-                leaf_names.append("Leaf node: %s" % y_name[max(y[indices])])
+                leaf_names.append("叶节点: %s" % y_name[max(y[indices])])
             
-        decision_names.append("Split on: %s" % feature_name[level[2]])
+        decision_names.append("在上分割: %s" % feature_name[level[2]])
         root += 1
     
     

@@ -10,7 +10,7 @@ def generate_rewards(num_states, each_step_reward, terminal_left_reward, termina
     return rewards 
 
 def generate_transition_prob(num_states, num_actions, misstep_prob = 0):
-    # 0 is left, 1 is right 
+    # 0 表示左，1 表示右
     
     p = np.zeros((num_states, num_actions, num_states))
     
@@ -23,7 +23,7 @@ def generate_transition_prob(num_states, num_actions, misstep_prob = 0):
             p[i, 1, i+1] = 1  - misstep_prob
             p[i, 0, i+1] = misstep_prob
         
-    # Terminal States    
+    # 终止状态
     p[0] = np.zeros((num_actions, num_states))
     p[-1] = np.zeros((num_actions, num_states))
     
@@ -82,10 +82,10 @@ def get_optimal_policy(num_states, num_actions, rewards, transition_prob, gamma)
     return optimal_policy, V
 
 def calculate_Q_values(num_states, rewards, transition_prob, gamma, optimal_policy):
-    # Left and then optimal policy
+    # 向左然后最优策略
     q_left_star = np.zeros(num_states)
 
-    # Right and optimal policy
+    # 向右然后最优策略
     q_right_star = np.zeros(num_states)
     
     V_star =  evaluate_policy(num_states, rewards, transition_prob, gamma, optimal_policy)
@@ -115,7 +115,7 @@ def plot_optimal_policy_return(num_states, optimal_policy, rewards, V):
     ax.set_xticklabels([])
     ax.set_yticklabels([])
     ax.tick_params(axis='both', which='both', length=0)
-    ax.set_title("Optimal policy",fontsize = 16)
+    ax.set_title("最优策略",fontsize = 16)
 
 def plot_q_values(num_states, q_left_star, q_right_star, rewards):
     fig, ax = plt.subplots(figsize=(3*num_states,2))

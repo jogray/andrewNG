@@ -44,8 +44,8 @@ def generate_split_viz(node_indices, left_indices, right_indices, feature):
     trans=ax.transData.transform
     trans2=fig.transFigure.inverted().transform
 
-    feature_name = ["Brown Cap", "Tapering Stalk Shape", "Solitary"][feature]
-    ax_name = ["Splitting on %s" % feature_name , "Left: %s = 1" % feature_name, "Right: %s = 0" % feature_name]
+    feature_name = ["棕色菌盖", "细长菌柄", "独生"][feature]
+    ax_name = ["在 %s 上分割" % feature_name , "左: %s = 1" % feature_name, "右: %s = 0" % feature_name]
     for idx, n in enumerate(G):
         xx,yy=trans(pos[n]) # figure coordinates
         xa,ya=trans2((xx,yy)) # axes coordinates
@@ -71,8 +71,8 @@ def generate_tree_viz(root_indices, y, tree):
     
     num_images = [len(root_indices)]
     
-    feature_name = ["Brown Cap", "Tapering Stalk Shape", "Solitary"]
-    y_name = ["Poisonous","Edible"]
+    feature_name = ["棕色菌盖", "细长菌柄", "独生"]
+    y_name = ["有毒","可食用"]
     
     decision_names = []
     leaf_names = []
@@ -87,9 +87,9 @@ def generate_tree_viz(root_indices, y, tree):
             num_images.append(len(indices))
             idx += 1
             if i > 0:
-                leaf_names.append("Leaf node: %s" % y_name[max(y[indices])])
+                leaf_names.append("叶节点: %s" % y_name[max(y[indices])])
             
-        decision_names.append("Split on: %s" % feature_name[level[2]])
+        decision_names.append("在上分割: %s" % feature_name[level[2]])
         root += 1
     
     

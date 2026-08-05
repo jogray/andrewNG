@@ -21,11 +21,11 @@ ltcolors = plt.cm.Paired((0,2,6,8,4,10))
 dkcolors_map = mpl.colors.ListedColormap(dkcolors)
 ltcolors_map = mpl.colors.ListedColormap(ltcolors)
 
-#Plot a multi-class categorical decision boundary
-# This version handles a non-vector prediction (adds a for-loop over points)
+#绘制多类别分类决策边界
+# 此版本处理非向量预测（添加了对点的for循环）
 def plot_cat_decision_boundary_mc(ax, X, predict , class_labels=None, legend=False, vector=True):
 
-    # create a mesh to points to plot
+    # 创建网格点用于绘图
     x_min, x_max = X[:, 0].min()- 0.5, X[:, 0].max()+0.5
     y_min, y_max = X[:, 1].min()- 0.5, X[:, 1].max()+0.5
     h = max(x_max-x_min, y_max-y_min)/100
@@ -35,7 +35,7 @@ def plot_cat_decision_boundary_mc(ax, X, predict , class_labels=None, legend=Fal
     #print("points", points.shape)
     #print("xx.shape", xx.shape)
 
-    #make predictions for each point in mesh
+    #对网格中的每个点进行预测
     if vector:
         Z = predict(points)
     else:
@@ -44,14 +44,14 @@ def plot_cat_decision_boundary_mc(ax, X, predict , class_labels=None, legend=Fal
             Z[i] = predict(points[i].reshape(1,2))
     Z = Z.reshape(xx.shape)
 
-    #contour plot highlights boundaries between values - classes in this case
+    #等高线图突出显示值之间的边界 - 在本例中为类别
     ax.contour(xx, yy, Z, linewidths=1) 
     #ax.axis('tight')
 
       
 def plt_mc_data(ax, X, y, classes,  class_labels=None, map=plt.cm.Paired, 
                 legend=False, size=50, m='o', equal_xy = False):
-    """ Plot multiclass data. Note, if equal_xy is True, setting ylim on the plot may not work """
+    """ 绘制多类别数据。注意，如果equal_xy为True，在图上设置ylim可能不起作用 """
     for i in range(classes):
         idx = np.where(y == i)
         col = len(idx[0])*[i]
@@ -73,7 +73,7 @@ def plt_mc(X_train,y_train,classes, centers, std):
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
     plt_mc_data(ax, X_train,y_train,classes, map=dkcolors_map, legend=True, size=50, equal_xy = False)
-    ax.set_title("Multiclass Data")
+    ax.set_title("多类别数据")
     ax.set_xlabel("x0")
     ax.set_ylabel("x1")
     #for c in css:
@@ -82,7 +82,7 @@ def plt_mc(X_train,y_train,classes, centers, std):
     plt.show()
 
 def plt_cat_mc(X_train, y_train, model, classes):
-    #make a model for plotting routines to call
+    #为绘图例程创建模型
     model_predict = lambda Xl: np.argmax(model.predict(Xl),axis=1)
 
     fig,ax = plt.subplots(1,1, figsize=(3,3))
@@ -90,11 +90,11 @@ def plt_cat_mc(X_train, y_train, model, classes):
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
  
-    #add the original data to the decison boundary
+    #将原始数据添加到决策边界
     plt_mc_data(ax, X_train,y_train, classes, map=dkcolors_map, legend=True)
-    #plot the decison boundary. 
+    #绘制决策边界。
     plot_cat_decision_boundary_mc(ax, X_train, model_predict, vector=True)
-    ax.set_title("model decision boundary")
+    ax.set_title("模型决策边界")
 
     plt.xlabel(r'$x_0$');
     plt.ylabel(r"$x_1$"); 
@@ -102,14 +102,14 @@ def plt_cat_mc(X_train, y_train, model, classes):
 
     
 def plt_prob_z(ax,fwb, x0_rng=(-8,8), x1_rng=(-5,4)):
-    """ plots a decision boundary but include shading to indicate the probability
-        and adds a conouter to show where z=0
+    """ 绘制决策边界，包含阴影以表示概率，
+        并添加等高线显示z=0的位置
     """
-    #setup useful ranges and common linspaces
+    #设置有用的范围和常用线性空间
     x0_space  = np.linspace(x0_rng[0], x0_rng[1], 40)
     x1_space  = np.linspace(x1_rng[0], x1_rng[1], 40)
 
-    # get probability for x0,x1 ranges
+    # 获取x0, x1范围的概率
     tmp_x0,tmp_x1 = np.meshgrid(x0_space,x1_space)
     z = np.zeros_like(tmp_x0)
     c = np.zeros_like(tmp_x0)
@@ -132,7 +132,7 @@ def plt_prob_z(ax,fwb, x0_rng=(-8,8), x1_rng=(-5,4)):
     ax.figure.colorbar(pcm, ax=ax)
 
 def truncate_colormap(cmap, minval=0.0, maxval=1.0, n=100):
-    """ truncates color map """
+    """ 截断颜色映射 """
     new_cmap = colors.LinearSegmentedColormap.from_list(
         'trunc({n},{a:.2f},{b:.2f})'.format(n=cmap.name, a=minval, b=maxval),
         cmap(np.linspace(minval, maxval, n)))
@@ -148,10 +148,10 @@ def plt_layer_relu(X, Y, W1, b1, classes):
     fig.canvas.footer_visible = False
 
     for i in range(nunits):
-        layerf= lambda x : np.maximum(0,(np.dot(x,W1[:,i]) + b1[i]))
+        layerf= lambda x : np.maximum(0,(np.dot(x,W1[:,i]) + b1[i])).item()
         plt_prob_z(ax[i], layerf)
         plt_mc_data(ax[i], X, Y, classes, map=dkcolors_map,legend=True, size=50, m='o')
-        ax[i].set_title(f"Layer 1 Unit {i}")
+        ax[i].set_title(f"第1层 单元 {i}")
         ax[i].set_ylabel(r"$x_1$",size=10)
         ax[i].set_xlabel(r"$x_0$",size=10)
     fig.tight_layout()
@@ -166,13 +166,13 @@ def plt_output_layer_linear(X, Y, W, b, classes, x0_rng=None, x1_rng=None):
     fig.canvas.header_visible = False
     fig.canvas.footer_visible = False
     for i,axi in enumerate(ax.flat):
-        layerf = lambda x : np.dot(x,W[:,i]) + b[i]
+        layerf = lambda x : (np.dot(x,W[:,i]) + b[i]).item()
         plt_prob_z(axi, layerf, x0_rng=x0_rng, x1_rng=x1_rng)
         plt_mc_data(axi, X, Y, classes, map=dkcolors_map,legend=True, size=50, m='o')
         axi.set_ylabel(r"$a^{[1]}_1$",size=9)
         axi.set_xlabel(r"$a^{[1]}_0$",size=9)
         axi.set_xlim(x0_rng)
         axi.set_ylim(x1_rng)
-        axi.set_title(f"Linear Output Unit {i}")
+        axi.set_title(f"线性输出单元 {i}")
     fig.tight_layout()
     plt.show()
