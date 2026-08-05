@@ -14,8 +14,10 @@ def test_tower(target):
     for layer in target.layers:
         assert type(layer) == expected[i][0], \
             f"第 {i} 层类型错误。期望 {expected[i][0]} 但得到 {type(layer)}"
-        assert layer.output.shape.as_list() == expected[i][1], \
-            f"第 {i} 层单元数错误。期望 {expected[i][1]} 但得到 {layer.output.shape.as_list()}"
+        shape = layer.output.shape
+        shape_list = list(shape) if isinstance(shape, tuple) else shape.as_list()
+        assert shape_list == expected[i][1], \
+            f"第 {i} 层单元数错误。期望 {expected[i][1]} 但得到 {shape_list}"
         assert layer.activation == expected[i][2], \
             f"第 {i} 层激活函数错误。期望 {expected[i][2]} 但得到 {layer.activation}"
         i = i + 1
